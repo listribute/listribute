@@ -1,11 +1,9 @@
 export interface Item {
-    id: number;
+    id?: number;
     name: string;
     description?: string;
     imgUrl?: string;
     listId: number;
     order: number;
-    created: string;
-    createdBy: number;
-    checkedBy: string[];
+    checkedBy?: string[];
 }

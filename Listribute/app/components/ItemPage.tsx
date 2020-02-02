@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "react-native";
-import { Item } from "../../../model/item";
+import { Item } from "../model/item";
 
 interface Props {
     item: Item;

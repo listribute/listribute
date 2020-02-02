@@ -13,6 +13,8 @@ const endpoints = {
     auth: "auth",
     user: "user",
     list: "list",
+    item: "item",
+    subscription: "subscription",
 };
 
 // START /auth
@@ -71,10 +73,10 @@ export const sendPassword = (username: string): Promise<void> => {
 // END /user
 
 // START /list
-export const createNewList = (wishList: boolean): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.post(settings.baseUrl + '/list', {wishList: !!wishList});
+export const createNewList = (wishList: boolean): Promise<List> => {
+    return client
+        .post<List>(endpoints.list, { wishList })
+        .then(response => response.data);
 };
 
 export const updateList = (list: List): Promise<void> => {
@@ -101,14 +103,14 @@ export const getListItems = (listId: number): Promise<Item[]> => {
 // END /list
 
 // START /item
-export const createNewItem = (
-    listId: number,
-    name: string,
-    order: number,
-): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.post(settings.baseUrl + '/item', {listId:listId,name:name,order:order});
+export const createNewItem = (item: {
+    listId: number;
+    name: string;
+    order: number;
+}): Promise<Item> => {
+    return client
+        .post<Item>(endpoints.item, item)
+        .then(response => response.data);
 };
 
 export const updateItem = (item: Item): Promise<void> => {
@@ -118,21 +120,15 @@ export const updateItem = (item: Item): Promise<void> => {
 };
 
 export const checkItem = (itemId: number): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.post(settings.baseUrl + '/item/' + itemId + '/check');
+    return client.post(`${endpoints.item}/${itemId}/check`);
 };
 
 export const uncheckItem = (itemId: number): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.delete(settings.baseUrl + '/item/' + itemId + '/check');
+    return client.delete(`${endpoints.item}/${itemId}/check`);
 };
 
 export const removeItem = (itemId: number): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.delete(settings.baseUrl + '/item/' + itemId);
+    return client.delete(`${endpoints.item}/${itemId}`);
 };
 // END /item
 
@@ -148,7 +144,6 @@ export const addUserToList = (
 };
 
 export const removeListForUser = (listId: number): Promise<void> => {
-    return Promise.reject("Not implemented");
-    // return $http.delete(settings.baseUrl + '/subscription/' + listId);
+    return client.delete(`${endpoints.subscription}/${listId}`);
 };
 // END /subscription

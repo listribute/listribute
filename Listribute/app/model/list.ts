@@ -1,8 +1,6 @@
 export interface List {
-    id: number;
+    id?: number;
     name: string;
     wishList: boolean;
-    created: string;
-    createdBy: number;
-    subscribers: string[];
+    subscribers?: string[];
 }

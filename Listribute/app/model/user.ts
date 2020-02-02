@@ -4,5 +4,4 @@ export interface User {
     password: string;
     email?: string;
     pushNotifications: boolean;
-    created: string;
 }
