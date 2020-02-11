@@ -125,7 +125,9 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                     Platform.OS !== "ios"
                         ? undefined
                         : {
-                              icon: "arrow-back-ios",
+                              icon: "arrow-back",
+                              color: "white",
+                              onPress: onBack,
                           }
                 }
                 centerComponent={{
