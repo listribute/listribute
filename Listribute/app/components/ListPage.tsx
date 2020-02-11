@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { BackHandler, Platform, Text, View } from "react-native";
-import { Button, Header, Input, ListItem } from "react-native-elements";
+import { Platform, Text, View } from "react-native";
+import { Header, Input } from "react-native-elements";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
+import useBackButton from "../hooks/useBackButton";
 import { Item } from "../model/item";
 import { List } from "../model/list";
 import { listributeRed } from "./colors";
+import { HiddenListItem, ListItem } from "./ListItem";
 
 interface Props {
     username: string;
@@ -14,19 +16,7 @@ interface Props {
 }
 
 const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
-    // Handle back button on Android
-    useEffect(() => {
-        const listener = BackHandler.addEventListener(
-            "hardwareBackPress",
-            () => {
-                onBack();
-                return true;
-            },
-        );
-        return () => {
-            listener.remove();
-        };
-    }, []);
+    useBackButton(onBack);
 
     const [list, setList] = useState(listProp);
 
@@ -54,7 +44,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
     const [inputFocused, setInputFocused] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
-    const [ref, setRef] = useState<Input>();
+    const [inputRef, setInputRef] = useState<Input>();
 
     const addItem = async (blur: boolean) => {
         if (inputValue && list.id) {
@@ -66,33 +56,11 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
 
             setItems([item, ...(items ?? [])]);
 
-            if (ref && blur) {
-                ref.blur();
+            if (inputRef && blur) {
+                inputRef.blur();
             }
         }
         setInputValue("");
-    };
-
-    const deleteItem = async (item: Item) => {
-        if (items) {
-            const idx = items.indexOf(item);
-            if (idx > -1 && items[idx].id) {
-                await api.removeItem(items[idx].id!);
-            }
-            setItems([...items.slice(0, idx), ...items.slice(idx + 1)]);
-        }
-    };
-
-    const checkItem = (item: Item) => {
-        const idx = item.checkedBy!.indexOf(username);
-        if (idx > -1) {
-            item.checkedBy!.splice(idx, 1);
-            api.uncheckItem(item.id!);
-        } else {
-            item.checkedBy!.push(username);
-            api.checkItem(item.id!);
-        }
-        setItems(items!.slice(0));
     };
 
     const toggleMoreMenu = () => {};
@@ -143,7 +111,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                 }}
             />
             <Input
-                ref={input => input && setRef(input)}
+                ref={input => input && setInputRef(input)}
                 placeholder="New item"
                 leftIcon={{ name: "edit" }}
                 onFocus={() => setInputFocused(true)}
@@ -163,39 +131,20 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                     onRefresh={refresh}
                     renderItem={({ item }) => (
                         <ListItem
-                            title={item.name}
-                            leftIcon={{
-                                name:
-                                    item.checkedBy &&
-                                    item.checkedBy.indexOf(username) > -1
-                                        ? "check-circle"
-                                        : item.checkedBy?.length
-                                        ? "radio-button-checked"
-                                        : "radio-button-unchecked",
-                                onPress: () => checkItem(item),
-                            }}
-                            bottomDivider
+                            username={username}
+                            item={item}
+                            onItemChecked={() => setItems(items.slice(0))}
                         />
                     )}
                     renderHiddenItem={({ item, index }, rowMap) => (
-                        <View
-                            style={{
-                                alignItems: "flex-start",
-                                backgroundColor: listributeRed,
+                        <HiddenListItem
+                            item={item}
+                            onDeleteItem={() => {
+                                rowMap[index.toString()].closeRow();
+                                items.splice(index, 1);
+                                setItems(items.slice(0));
                             }}
-                        >
-                            <Button
-                                icon={{ name: "delete", color: "white" }}
-                                title="Delete"
-                                type="clear"
-                                buttonStyle={{ height: "100%" }}
-                                titleStyle={{ color: "white" }}
-                                onPress={() => {
-                                    rowMap[index.toString()].closeRow();
-                                    deleteItem(item);
-                                }}
-                            />
-                        </View>
+                        />
                     )}
                     friction={100}
                     tension={150}
