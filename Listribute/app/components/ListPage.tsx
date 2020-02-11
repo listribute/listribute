@@ -135,6 +135,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                 rightComponent={{
                     icon: inputFocused ? "add" : "more-vert",
                     color: "white",
+                    underlayColor: "transparent",
                     onPress: () =>
                         inputFocused ? addItem(true) : toggleMoreMenu(),
                 }}
