@@ -61,6 +61,10 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
         setLists(updated);
     };
 
+    const openUserSettings = () => {
+        // TODO: Open user settings
+    };
+
     return (
         <View style={{ height: "100%" }}>
             <Header
@@ -74,6 +78,12 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
                             : {},
                 })}
                 backgroundColor={listributeRed}
+                leftComponent={{
+                    icon: "settings",
+                    color: "white",
+                    underlayColor: "transparent",
+                    onPress: () => openUserSettings(),
+                }}
                 centerComponent={{
                     text: `Hi, ${user.username}`,
                     style: { color: "white", fontSize: 18 },
@@ -81,6 +91,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
                 rightComponent={{
                     icon: "add",
                     color: "white",
+                    underlayColor: "transparent",
                     onPress: () => addList(),
                 }}
             />
