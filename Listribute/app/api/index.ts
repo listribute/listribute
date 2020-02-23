@@ -3,11 +3,37 @@ import { Item } from "../model/item";
 import { List } from "../model/list";
 import { User } from "../model/user";
 
+// Credentials set by initialize to be able to re-authenticate
+// when session cookie expires and we receive a 401
+let credentials: Credentials;
+
 const client = axios.create({
     // TODO: Extract baseURL to a config file
     baseURL: "https://vtek.no/listribute/api/",
     withCredentials: true, // for session cookie
 });
+
+client.interceptors.response.use(
+    response => response,
+    async error => {
+        if (error?.response?.status === 401) {
+            console.log("Session cookie expired, re-authenticating...");
+            try {
+                await login(credentials);
+            } catch (err) {
+                // TODO: This is bad.
+                // Ask user if we should reset storage and basically do a factory reset?
+                console.error("Tried to re-authenticate, but failed.", err);
+                return Promise.reject(error);
+            }
+            console.log("Successfully re-authenticated, repeating request.");
+            return client.request(error.config);
+        }
+        // TODO: Implement some global generic error handler
+        // to present some information to the user
+        return Promise.reject(error);
+    },
+);
 
 const endpoints = {
     auth: "auth",
@@ -17,11 +43,18 @@ const endpoints = {
     subscription: "subscription",
 };
 
-// START /auth
-export const login = (user: {
+export type Credentials = {
     username: string;
     password: string;
-}): Promise<User> => {
+};
+
+export const initialize = (user: Credentials) => {
+    credentials = user;
+    return login(user);
+};
+
+// START /auth
+export const login = (user: Credentials): Promise<User> => {
     return client
         .post<User>(endpoints.auth, user)
         .then(response => response.data);

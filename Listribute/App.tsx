@@ -21,8 +21,9 @@ const App: React.FC = () => {
                 // Store the new user's credentials
                 storage.setUser(user);
             }
-            // Login to API to set session cookie for future requests
-            user = await api.login(user);
+            // Initialize API client so it can re-authenticate automatically
+            // when receiving a 401
+            user = await api.initialize(user);
             // Update state with new user
             setCurrentUser(user);
         })();
