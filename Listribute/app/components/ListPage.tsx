@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Platform, Text, View } from "react-native";
-import { Header, Input } from "react-native-elements";
+import { Input } from "react-native-elements";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
 import useBackButton from "../hooks/useBackButton";
 import { Item } from "../model/item";
 import { List } from "../model/list";
-import { listributeRed } from "./colors";
 import { HiddenListItem, ListItem } from "./ListItem";
+import Header from "./Header";
 
 interface Props {
     username: string;
@@ -79,25 +79,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
     return (
         <View style={{ height: "100%" }}>
             <Header
-                statusBarProps={{
-                    translucent: true,
-                }}
-                containerStyle={Platform.select({
-                    android:
-                        Platform.Version <= 20
-                            ? { paddingTop: 0, height: 56 }
-                            : {},
-                })}
-                backgroundColor={listributeRed}
-                leftComponent={
-                    Platform.OS !== "ios"
-                        ? undefined
-                        : {
-                              icon: "arrow-back",
-                              color: "white",
-                              onPress: onBack,
-                          }
-                }
+                onBackButton={onBack}
                 centerComponent={{
                     text: list.name,
                     style: { color: "white", fontSize: 18 },

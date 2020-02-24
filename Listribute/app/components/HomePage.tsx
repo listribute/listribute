@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Platform, View } from "react-native";
-import {
-    Button,
-    Card,
-    Header,
-    Icon,
-    ListItem,
-    Text,
-} from "react-native-elements";
+import { Button, Card, Icon, ListItem, Text } from "react-native-elements";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
 import { List } from "../model/list";
 import { User } from "../model/user";
 import { listributeRed } from "./colors";
+import Header from "./Header";
 
 interface Props {
     user: User;
@@ -68,16 +62,6 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
     return (
         <View style={{ height: "100%" }}>
             <Header
-                statusBarProps={{
-                    translucent: true,
-                }}
-                containerStyle={Platform.select({
-                    android:
-                        Platform.Version <= 20
-                            ? { paddingTop: 0, height: 56 }
-                            : {},
-                })}
-                backgroundColor={listributeRed}
                 leftComponent={{
                     icon: "settings",
                     color: "white",
