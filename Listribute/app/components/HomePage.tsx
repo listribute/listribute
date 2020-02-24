@@ -7,6 +7,7 @@ import { List } from "../model/list";
 import { User } from "../model/user";
 import { listributeRed } from "./colors";
 import Header from "./Header";
+import ListSettingsPage from "./ListSettingsPage";
 
 interface Props {
     user: User;
@@ -15,6 +16,7 @@ interface Props {
 
 const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
     const [lists, setLists] = useState<List[]>();
+    const [editingList, setEditingList] = useState<List>();
 
     useEffect(() => {
         (async () => {
@@ -43,7 +45,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
     };
 
     const editList = (list: List) => {
-        // TODO: Open list edit page
+        setEditingList(list);
     };
 
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -59,7 +61,12 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
         // TODO: Open user settings
     };
 
-    return (
+    return editingList ? (
+        <ListSettingsPage
+            list={editingList}
+            onBack={() => setEditingList(undefined)}
+        />
+    ) : (
         <View style={{ height: "100%" }}>
             <Header
                 leftComponent={{
