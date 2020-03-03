@@ -14,16 +14,18 @@ const App: React.FC = () => {
     useEffect(() => {
         (async () => {
             // Look for user credentials in storage
-            let user = await storage.getUser();
-            if (!user) {
+            let credentials = await storage.getUser();
+            if (!credentials) {
                 // Create a new user automatically
-                user = await api.createNewUser();
+                credentials = await api.createNewUser();
                 // Store the new user's credentials
-                storage.setUser(user);
+                storage.setUser(credentials);
             }
             // Initialize API client so it can re-authenticate automatically
-            // when receiving a 401
-            user = await api.initialize(user);
+            // when receiving a 401 due to session cookie being expired
+            api.initialize(credentials);
+            const user = await api.login();
+
             // Update state with new user
             setCurrentUser(user);
         })();

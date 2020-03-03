@@ -19,7 +19,7 @@ client.interceptors.response.use(
         if (error?.response?.status === 401) {
             console.log("Session cookie expired, re-authenticating...");
             try {
-                await login(credentials);
+                await login();
             } catch (err) {
                 // TODO: This is bad.
                 // Ask user if we should reset storage and basically do a factory reset?
@@ -50,13 +50,12 @@ export type Credentials = {
 
 export const initialize = (user: Credentials) => {
     credentials = user;
-    return login(user);
 };
 
 // START /auth
-export const login = (user: Credentials): Promise<User> => {
+export const login = (): Promise<User> => {
     return client
-        .post<User>(endpoints.auth, user)
+        .post<User>(endpoints.auth, credentials)
         .then(response => response.data);
 };
 
