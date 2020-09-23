@@ -6,10 +6,12 @@ import ListPage from "./app/components/ListPage";
 import { List } from "./app/model/list";
 import { User } from "./app/model/user";
 import * as storage from "./app/storage";
+import ListSettings from "./app/components/ListSettings";
 
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentList, setCurrentList] = useState<List>();
+    const [editList, setEditList] = useState<List>();
 
     useEffect(() => {
         (async () => {
@@ -39,10 +41,16 @@ const App: React.FC = () => {
                     list={currentList}
                     onBack={() => setCurrentList(undefined)}
                 />
+            ) : editList ? (
+                <ListSettings
+                    list={editList}
+                    onBack={() => setEditList(undefined)}
+                />
             ) : (
                 <HomePage
                     user={currentUser}
                     onSelectList={list => setCurrentList(list)}
+                    onEditList={list => setEditList(list)}
                 />
             )}
         </SafeAreaView>

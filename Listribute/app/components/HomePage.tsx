@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Button, Card, Icon, ListItem, Text } from "react-native-elements";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
@@ -11,9 +11,10 @@ import Header from "./Header";
 interface Props {
     user: User;
     onSelectList: (list: List) => void;
+    onEditList: (list: List) => void;
 }
 
-const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
+const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
     const [lists, setLists] = useState<List[]>();
 
     useEffect(() => {
@@ -42,10 +43,6 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
         }
     };
 
-    const editList = (list: List) => {
-        // TODO: Open list edit page
-    };
-
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const refresh = async () => {
@@ -60,7 +57,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
     };
 
     return (
-        <View style={{ height: "100%" }}>
+        <View style={style.container}>
             <Header
                 leftComponent={{
                     icon: "settings",
@@ -70,7 +67,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
                 }}
                 centerComponent={{
                     text: `Hi, ${user.username}`,
-                    style: { color: "white", fontSize: 18 },
+                    style: style.headerCenter,
                 }}
                 rightComponent={{
                     icon: "add",
@@ -103,14 +100,8 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
                         />
                     )}
                     renderHiddenItem={({ item: list, index }, rowMap) => (
-                        <View style={{ display: "flex", flexDirection: "row" }}>
-                            <View
-                                style={{
-                                    alignItems: "flex-start",
-                                    backgroundColor: listributeRed,
-                                    flex: 1,
-                                }}
-                            >
+                        <View style={style.hiddenItemContainer}>
+                            <View style={style.hiddenDelete}>
                                 <Button
                                     icon={{ name: "delete", color: "white" }}
                                     title="Delete"
@@ -123,7 +114,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
                                     }}
                                 />
                             </View>
-                            <View style={{ flex: 1, alignItems: "flex-end" }}>
+                            <View style={style.hiddenEdit}>
                                 <Button
                                     icon={{ name: "edit" }}
                                     title="Edit"
@@ -132,7 +123,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
                                     titleStyle={{ color: "darkgrey" }}
                                     onPress={() => {
                                         rowMap[index.toString()].closeRow();
-                                        editList(list);
+                                        onEditList(list);
                                     }}
                                 />
                             </View>
@@ -151,7 +142,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
 
             {lists?.length === 0 && (
                 <Card title="Welcome">
-                    <Text style={{ marginBottom: 10 }}>
+                    <Text style={style.welcomeText}>
                         You have no lists yet. Time to add one!
                     </Text>
                     <Button
@@ -165,5 +156,20 @@ const HomePage: React.FC<Props> = ({ user, onSelectList }) => {
         </View>
     );
 };
+
+const style = StyleSheet.create({
+    container: {
+        height: "100%",
+    },
+    headerCenter: { color: "white", fontSize: 18 },
+    hiddenItemContainer: { display: "flex", flexDirection: "row" },
+    hiddenDelete: {
+        alignItems: "flex-start",
+        backgroundColor: listributeRed,
+        flex: 1,
+    },
+    hiddenEdit: { flex: 1, alignItems: "flex-end" },
+    welcomeText: { marginBottom: 10 },
+});
 
 export default HomePage;

@@ -14,7 +14,7 @@ const useBackButton = (onBackButton: () => void) => {
         return () => {
             listener.remove();
         };
-    }, []);
+    }, [onBackButton]);
 };
 
 export default useBackButton;

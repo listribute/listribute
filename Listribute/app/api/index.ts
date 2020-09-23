@@ -111,10 +111,10 @@ export const createNewList = (wishList: boolean): Promise<List> => {
         .then(response => response.data);
 };
 
-export const updateList = (list: List): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.put(settings.baseUrl + '/list', list);
+export const updateList = (list: List): Promise<List> => {
+    return client
+        .put<List>(endpoints.list, list)
+        .then(response => response.data);
 };
 
 export const getList = (listId: number): Promise<List> => {
