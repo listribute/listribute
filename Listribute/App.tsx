@@ -43,6 +43,7 @@ const App: React.FC = () => {
                 />
             ) : editList ? (
                 <ListSettings
+                    currentUser={currentUser.username}
                     list={editList}
                     onBack={() => setEditList(undefined)}
                 />

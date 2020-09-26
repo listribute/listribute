@@ -6,39 +6,67 @@ import Header from ".././Header";
 import * as api from "../../api";
 import NameInput from "./NameInput";
 import WishListCheckBox from "./WishListCheckBox";
+import AddUserInput from "./AddUserInput";
+import UserList from "./UserList";
 
 interface Props {
+    currentUser: string;
     list: List;
     onBack: () => void;
 }
 
-const ListSettings: React.FC<Props> = ({ list: listProp, onBack }) => {
+const ListSettings: React.FC<Props> = ({
+    currentUser,
+    list: listProp,
+    onBack,
+}) => {
     useBackButton(onBack);
 
     const [list, setList] = useState(listProp);
+    const [subscribers, setSubscribers] = useState(listProp.subscribers ?? []);
 
-    const setName = (newName: string) => {
+    const setName = async (newName: string) => {
         if (newName) {
             const updatedList = {
                 ...list,
                 name: newName,
             };
-            // Fire and forget...
-            // TODO: Handle errors
-            api.updateList(updatedList);
-            setList(updatedList);
+
+            try {
+                await api.updateList(updatedList);
+                setList(updatedList);
+            } catch (err) {
+                console.error(err);
+                // TODO: Show error message
+            }
         }
     };
 
-    const setWishList = (isWishList: boolean) => {
+    const setWishList = async (isWishList: boolean) => {
         const updatedList = {
             ...list,
             wishList: isWishList,
         };
-        // Fire and forget...
-        // TODO: Handle errors
-        api.updateList(updatedList);
-        setList(updatedList);
+
+        try {
+            await api.updateList(updatedList);
+            setList(updatedList);
+        } catch (err) {
+            console.error(err);
+            // TODO: Show error message
+        }
+    };
+
+    const addUser = async (username: string) => {
+        if (username) {
+            try {
+                await api.addUserToList(list.id!, username);
+                setSubscribers(subscribers.concat(username));
+            } catch (err) {
+                console.error(err);
+                // TODO: Show error message
+            }
+        }
     };
 
     return (
@@ -55,6 +83,8 @@ const ListSettings: React.FC<Props> = ({ list: listProp, onBack }) => {
                 isWishList={list.wishList}
                 onChange={setWishList}
             />
+            <AddUserInput onSubmit={addUser} />
+            <UserList currentUser={currentUser} users={subscribers} />
         </View>
     );
 };

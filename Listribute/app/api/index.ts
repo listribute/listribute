@@ -169,10 +169,8 @@ export const addUserToList = (
     listId: number,
     username: string,
 ): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.post(settings.baseUrl + '/subscription',
-    //   {listId:listId,username:username});
+    const subscription = { listId: listId, username: username };
+    return client.post(endpoints.subscription, subscription);
 };
 
 export const removeListForUser = (listId: number): Promise<void> => {
