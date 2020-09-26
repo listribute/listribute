@@ -80,18 +80,22 @@ const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
                     onRefresh={refresh}
                     renderItem={({ item: list }) => (
                         <ListItem
-                            title={list.name}
-                            leftIcon={{
-                                name:
+                            onPress={() => onSelectList(list)}
+                            bottomDivider
+                        >
+                            <Icon
+                                name={
                                     list.subscribers &&
                                     list.subscribers.length > 1
                                         ? "person-add"
-                                        : "person",
-                            }}
-                            onPress={() => onSelectList(list)}
-                            bottomDivider
-                            chevron
-                        />
+                                        : "person"
+                                }
+                            />
+                            <ListItem.Content>
+                                <ListItem.Title>{list.name}</ListItem.Title>
+                            </ListItem.Content>
+                            <ListItem.Chevron />
+                        </ListItem>
                     )}
                     renderHiddenItem={({ item: list, index }, rowMap) => (
                         <View style={style.hiddenItemContainer}>
@@ -129,13 +133,15 @@ const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
                     tension={150}
                     leftOpenValue={150}
                     rightOpenValue={-150}
-                ></SwipeListView>
+                />
             )}
 
             {!lists && <Text>Loading...</Text>}
 
             {lists?.length === 0 && (
-                <Card title="Welcome">
+                <Card>
+                    <Card.Title>Welcome</Card.Title>
+                    <Card.Divider />
                     <Text style={style.welcomeText}>
                         You have no lists yet. Time to add one!
                     </Text>

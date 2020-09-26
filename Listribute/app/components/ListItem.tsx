@@ -29,19 +29,21 @@ export const ListItem: React.FC<ListItemProps> = ({
     };
 
     return (
-        <RNE.ListItem
-            title={item.name}
-            leftIcon={{
-                name:
+        <RNE.ListItem bottomDivider>
+            <RNE.Icon
+                name={
                     item.checkedBy && item.checkedBy.indexOf(username) > -1
                         ? "check-circle"
                         : item.checkedBy?.length
                         ? "radio-button-checked"
-                        : "radio-button-unchecked",
-                onPress: () => checkItem(item),
-            }}
-            bottomDivider
-        />
+                        : "radio-button-unchecked"
+                }
+                onPress={() => checkItem(item)}
+            />
+            <RNE.ListItem.Content>
+                <RNE.ListItem.Title>{item.name}</RNE.ListItem.Title>
+            </RNE.ListItem.Content>
+        </RNE.ListItem>
     );
 };
 
