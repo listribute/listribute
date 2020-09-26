@@ -8,6 +8,7 @@ import { Item } from "../model/item";
 import { List } from "../model/list";
 import { HiddenListItem, ListItem } from "./ListItem";
 import Header from "./Header";
+import useAsyncEffect from "../hooks/useAsyncEffect";
 
 interface Props {
     username: string;
@@ -30,16 +31,14 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
 
     const [items, setItems] = useState<Item[]>();
 
-    useEffect(() => {
-        if (list.id) {
-            (async () => {
-                const items = await api.getListItems(list.id!);
-                setItems(items);
-            })();
-
-            // TODO: Return clean up to cancel ongoing request
-        }
-    }, [list.id]);
+    useAsyncEffect(
+        () =>
+            list.id
+                ? api.getListItems(list.id)
+                : Promise.resolve<Item[]>(undefined!),
+        setItems,
+        [list.id],
+    );
 
     const [inputFocused, setInputFocused] = useState(false);
     const [inputValue, setInputValue] = useState("");

@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { Button, Card, Icon, ListItem, Text } from "react-native-elements";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
+import useAsyncEffect from "../hooks/useAsyncEffect";
 import { List } from "../model/list";
 import { User } from "../model/user";
 import { listributeRed } from "./colors";
@@ -17,14 +18,7 @@ interface Props {
 const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
     const [lists, setLists] = useState<List[]>();
 
-    useEffect(() => {
-        (async () => {
-            const lists = await api.getAllLists();
-            setLists(lists);
-        })();
-
-        // TODO: Return clean up to cancel ongoing request
-    }, []);
+    useAsyncEffect(api.getAllLists, setLists, []);
 
     const addList = () => {
         onSelectList({
