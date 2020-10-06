@@ -2,7 +2,7 @@ import React from "react";
 import "react-native";
 // Note: test renderer must be required after react-native.
 import renderer, { act, ReactTestRenderer } from "react-test-renderer";
-import App from "../App";
+import App from "../app/App";
 import * as api from "../app/api";
 import HomePage from "../app/components/HomePage";
 import ListPage from "../app/components/ListPage";
@@ -19,6 +19,7 @@ jest.mock("../app/api", () => ({
     initialize: () => undefined,
     createNewUser: async () => undefined,
     login: async () => undefined,
+    getAllLists: async () => undefined,
 }));
 
 const dummyUser: User = {
@@ -40,7 +41,6 @@ it("creates new user if none exists", async () => {
     const createNewUserMock = jest
         .spyOn(api, "createNewUser")
         .mockResolvedValueOnce(dummyUser);
-    const initializeSpy = jest.spyOn(api, "initialize");
     const loginMock = jest.spyOn(api, "login").mockResolvedValueOnce(dummyUser);
 
     let component: ReactTestRenderer;
@@ -51,14 +51,12 @@ it("creates new user if none exists", async () => {
     expect(getUserMock).toBeCalled();
     expect(createNewUserMock).toBeCalled();
     expect(setUserSpy).toBeCalledWith(dummyUser);
-    expect(initializeSpy).toBeCalledWith(dummyUser);
-    expect(loginMock).toBeCalledWith();
+    expect(loginMock).toBeCalledWith(dummyUser);
     expect(component!.root.findByType(HomePage).props.user).toBe(dummyUser);
 
     getUserMock.mockRestore();
     setUserSpy.mockRestore();
     createNewUserMock.mockRestore();
-    initializeSpy.mockRestore();
     loginMock.mockRestore();
 });
 

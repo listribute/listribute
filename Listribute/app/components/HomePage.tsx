@@ -13,9 +13,15 @@ interface Props {
     user: User;
     onSelectList: (list: List) => void;
     onEditList: (list: List) => void;
+    onOpenUserSettings: () => void;
 }
 
-const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
+const HomePage: React.FC<Props> = ({
+    user,
+    onSelectList,
+    onEditList,
+    onOpenUserSettings,
+}) => {
     const [lists, setLists] = useState<List[]>();
 
     useAsyncEffect(api.getAllLists, setLists, []);
@@ -46,10 +52,6 @@ const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
         setLists(updated);
     };
 
-    const openUserSettings = () => {
-        // TODO: Open user settings
-    };
-
     return (
         <View style={style.container}>
             <Header
@@ -57,7 +59,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
                     icon: "settings",
                     color: "white",
                     underlayColor: "transparent",
-                    onPress: () => openUserSettings(),
+                    onPress: onOpenUserSettings,
                 }}
                 centerComponent={{
                     text: `Hi, ${user.username}`,
@@ -67,7 +69,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
                     icon: "add",
                     color: "white",
                     underlayColor: "transparent",
-                    onPress: () => addList(),
+                    onPress: addList,
                 }}
             />
 
@@ -149,7 +151,7 @@ const HomePage: React.FC<Props> = ({ user, onSelectList, onEditList }) => {
                         buttonStyle={{ backgroundColor: listributeRed }}
                         icon={<Icon name="add" color="white" />}
                         title="Add new list"
-                        onPress={() => addList()}
+                        onPress={addList}
                     />
                 </Card>
             )}

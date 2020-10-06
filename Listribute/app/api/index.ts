@@ -16,10 +16,13 @@ const client = axios.create({
 client.interceptors.response.use(
     response => response,
     async error => {
-        if (error?.response?.status === 401) {
+        if (
+            error?.response?.status === 401 &&
+            error?.config?.url?.indexOf("auth") === -1
+        ) {
             console.log("Session cookie expired, re-authenticating...");
             try {
-                await login();
+                await login(credentials);
             } catch (err) {
                 // TODO: This is bad.
                 // Ask user if we should reset storage and basically do a factory reset?
@@ -48,15 +51,14 @@ export type Credentials = {
     password: string;
 };
 
-export const initialize = (user: Credentials) => {
-    credentials = user;
-};
-
 // START /auth
-export const login = (): Promise<User> => {
-    return client
-        .post<User>(endpoints.auth, credentials)
-        .then(response => response.data);
+export const login = async (cred: Credentials): Promise<User> => {
+    const response = await client.post<User>(
+        endpoints.auth,
+        cred ?? credentials,
+    );
+    credentials = cred;
+    return response.data;
 };
 
 export const logout = (): Promise<void> => {
@@ -69,10 +71,10 @@ export const createNewUser = (): Promise<User> => {
     return client.post<User>(endpoints.user).then(response => response.data);
 };
 
-export const updateUser = (user: User): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.put(settings.baseUrl + '/user', user);
+export const updateUser = (user: User): Promise<User> => {
+    return client
+        .put<User>(endpoints.user, user)
+        .then(response => response.data);
 };
 
 export const getUserInfo = (): Promise<User> => {
@@ -80,9 +82,7 @@ export const getUserInfo = (): Promise<User> => {
 };
 
 export const testUsername = (username: string): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.get(settings.baseUrl + '/user/test/' + username);
+    return client.get(`${endpoints.user}/test/${username}`);
 };
 
 export const registerGCMToken = (token: string): Promise<void> => {
@@ -98,9 +98,7 @@ export const registerAPNToken = (token: string): Promise<void> => {
 };
 
 export const sendPassword = (username: string): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.get(settings.baseUrl + '/user/' + username + '/sendpassword');
+    return client.get(`${endpoints.user}/${username}/sendpassword`);
 };
 // END /user
 

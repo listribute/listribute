@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native";
-import * as api from "./app/api";
-import HomePage from "./app/components/HomePage";
-import ListPage from "./app/components/ListPage";
-import { List } from "./app/model/list";
-import { User } from "./app/model/user";
-import * as storage from "./app/storage";
-import ListSettings from "./app/components/ListSettings";
+import * as api from "./api";
+import HomePage from "./components/HomePage";
+import ListPage from "./components/ListPage";
+import { List } from "./model/list";
+import { User } from "./model/user";
+import * as storage from "./storage";
+import ListSettings from "./components/ListSettings";
+import UserSettings from "./components/UserSettings";
+import useAsyncEffect from "./hooks/useAsyncEffect";
 
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentList, setCurrentList] = useState<List>();
     const [editList, setEditList] = useState<List>();
+    const [userSettingsOpen, setUserSettingsOpen] = useState(false);
 
-    useEffect(() => {
-        (async () => {
+    useAsyncEffect(
+        async () => {
             // Look for user credentials in storage
             let credentials = await storage.getUser();
             if (!credentials) {
@@ -23,15 +26,17 @@ const App: React.FC = () => {
                 // Store the new user's credentials
                 storage.setUser(credentials);
             }
-            // Initialize API client so it can re-authenticate automatically
-            // when receiving a 401 due to session cookie being expired
-            api.initialize(credentials);
-            const user = await api.login();
+            const user = await api.login(credentials);
+            return user;
+        },
+        setCurrentUser,
+        [],
+    );
 
-            // Update state with new user
-            setCurrentUser(user);
-        })();
-    }, []);
+    const switchUser = (user: User) => {
+        storage.setUser(user);
+        setCurrentUser(user);
+    };
 
     return currentUser === undefined ? null : (
         <SafeAreaView>
@@ -47,11 +52,18 @@ const App: React.FC = () => {
                     list={editList}
                     onBack={() => setEditList(undefined)}
                 />
+            ) : userSettingsOpen ? (
+                <UserSettings
+                    user={currentUser}
+                    onBack={() => setUserSettingsOpen(false)}
+                    onSwitchUser={switchUser}
+                />
             ) : (
                 <HomePage
                     user={currentUser}
                     onSelectList={list => setCurrentList(list)}
                     onEditList={list => setEditList(list)}
+                    onOpenUserSettings={() => setUserSettingsOpen(true)}
                 />
             )}
         </SafeAreaView>

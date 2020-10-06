@@ -26,14 +26,28 @@ const dummyList: List = {
 };
 
 it("renders component correctly", () => {
-    renderer.create(<HomePage user={dummyUser} onSelectList={jest.fn()} />);
+    renderer.create(
+        <HomePage
+            user={dummyUser}
+            onSelectList={jest.fn()}
+            onEditList={jest.fn()}
+            onOpenUserSettings={jest.fn()}
+        />,
+    );
 });
 
 it("fetches all lists on mount", () => {
     const getAllListsSpy = jest.spyOn(api, "getAllLists");
 
     act(() => {
-        renderer.create(<HomePage user={dummyUser} onSelectList={jest.fn()} />);
+        renderer.create(
+            <HomePage
+                user={dummyUser}
+                onSelectList={jest.fn()}
+                onEditList={jest.fn()}
+                onOpenUserSettings={jest.fn()}
+            />,
+        );
     });
 
     expect(getAllListsSpy).toBeCalled();
@@ -49,7 +63,12 @@ it("refreshes lists on demand", async () => {
     let component: ReactTestRenderer;
     await act(async () => {
         component = renderer.create(
-            <HomePage user={dummyUser} onSelectList={jest.fn()} />,
+            <HomePage
+                user={dummyUser}
+                onSelectList={jest.fn()}
+                onEditList={jest.fn()}
+                onOpenUserSettings={jest.fn()}
+            />,
         );
     });
 
