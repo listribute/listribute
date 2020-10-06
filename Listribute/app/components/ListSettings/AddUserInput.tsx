@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { EventEmitter } from "react-native";
 import { Input } from "react-native-elements";
 
 interface Props {

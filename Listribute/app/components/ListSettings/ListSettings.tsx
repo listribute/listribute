@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import useBackButton from "../../hooks/useBackButton";
 import { List } from "../../model/list";
-import Header from ".././Header";
+import Header from "../Header";
 import * as api from "../../api";
 import NameInput from "./NameInput";
 import WishListCheckBox from "./WishListCheckBox";
