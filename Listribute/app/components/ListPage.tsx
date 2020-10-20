@@ -9,6 +9,7 @@ import { List } from "../model/list";
 import { HiddenListItem, ListItem } from "./ListItem";
 import Header from "./Header";
 import useAsyncEffect from "../hooks/useAsyncEffect";
+import { itemsObservable } from "../api";
 
 interface Props {
     username: string;
@@ -39,6 +40,14 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
         setItems,
         [list.id],
     );
+    useEffect(() => {
+        if (!list.id) return;
+
+        const subscription = itemsObservable(list.id).subscribe(setItems);
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [list.id]);
 
     const [inputFocused, setInputFocused] = useState(false);
     const [inputValue, setInputValue] = useState("");

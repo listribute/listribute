@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Observable } from "rxjs";
 import { Item } from "../model/item";
 import { List } from "../model/list";
 import { User } from "../model/user";
@@ -175,3 +176,33 @@ export const removeListForUser = (listId: number): Promise<void> => {
     return client.delete(`${endpoints.subscription}/${listId}`);
 };
 // END /subscription
+
+// START observables
+
+// TODO: Create persistent websocket connection
+
+export const listsObservable: Observable<List[]> = new Observable(
+    subscriber => {
+        // TODO: Subscribe to lists updates over websocket connection
+        // setTimeout(() => {
+        //     subscriber.next([]);
+        // }, 5000);
+
+        return () => {
+            // TODO: Dispose subscription
+        };
+    },
+);
+
+export const itemsObservable = (listId: number): Observable<Item[]> =>
+    new Observable(subscriber => {
+        // TODO: Subscribe to items updates over websocket connection
+        // setTimeout(() => {
+        //     subscriber.next([]);
+        // }, 5000);
+
+        return () => {
+            // TODO: Dispose subscription
+        };
+    });
+// END observables

@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { Button, Card, Icon, ListItem, Text } from "react-native-elements";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
+import { listsObservable } from "../api";
 import useAsyncEffect from "../hooks/useAsyncEffect";
 import { List } from "../model/list";
 import { User } from "../model/user";
@@ -25,6 +26,12 @@ const HomePage: React.FC<Props> = ({
     const [lists, setLists] = useState<List[]>();
 
     useAsyncEffect(api.getAllLists, setLists, []);
+    useEffect(() => {
+        const subscription = listsObservable.subscribe(setLists);
+        return () => {
+            subscription.unsubscribe();
+        };
+    });
 
     const addList = () => {
         onSelectList({
