@@ -111,11 +111,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                     refreshing={isRefreshing}
                     onRefresh={refresh}
                     renderItem={({ item }) => (
-                        <ListItem
-                            username={username}
-                            item={item}
-                            onItemChecked={() => setItems(items.slice(0))}
-                        />
+                        <ListItem username={username} item={item} />
                     )}
                     renderHiddenItem={({ item, index }, rowMap) => (
                         <HiddenListItem

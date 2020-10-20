@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import * as RNE from "react-native-elements";
 import * as api from "../api";
@@ -8,24 +8,31 @@ import { listributeRed } from "./colors";
 interface ListItemProps {
     username: string;
     item: Item;
-    onItemChecked: (item: Item) => void;
 }
 
 export const ListItem: React.FC<ListItemProps> = ({
     username,
-    item,
-    onItemChecked,
+    item: itemProp,
 }) => {
+    const [item, setItem] = useState(itemProp);
+    useEffect(() => {
+        setItem(itemProp);
+    }, [itemProp]);
+
     const checkItem = (item: Item) => {
         const idx = item.checkedBy!.indexOf(username);
         if (idx > -1) {
             item.checkedBy!.splice(idx, 1);
-            api.uncheckItem(item.id!);
+            api.uncheckItem(item.id!).catch(() => {
+                item.checkedBy!.push(username);
+            });
         } else {
             item.checkedBy!.push(username);
-            api.checkItem(item.id!);
+            api.checkItem(item.id!).catch(() => {
+                item.checkedBy!.pop();
+            });
         }
-        onItemChecked(item);
+        setItem({ ...item });
     };
 
     return (
