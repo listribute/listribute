@@ -144,6 +144,14 @@ android {
         }
     }
     signingConfigs {
+        release {
+            if (project.hasProperty('LISTRIBUTE_APK_STORE_FILE')) {
+                storeFile file(LISTRIBUTE_APK_STORE_FILE)
+                storePassword LISTRIBUTE_APK_STORE_PASSWORD
+                keyAlias LISTRIBUTE_APK_KEY_ALIAS
+                keyPassword LISTRIBUTE_APK_KEY_PASSWORD
+            }
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
