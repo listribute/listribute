@@ -22,7 +22,7 @@ const UsernameInput: React.FC<Props> = ({
         <Input
             label="Username"
             placeholder="username"
-            leftIcon={{ name: "edit" }}
+            leftIcon={{ name: "person" }}
             onChangeText={onChange}
             value={username}
             errorMessage={conflicting ? "Username is taken" : undefined}

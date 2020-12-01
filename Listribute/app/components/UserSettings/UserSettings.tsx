@@ -100,10 +100,9 @@ const UserSettings: React.FC<Props> = ({
                     onPress: save,
                 }}
             />
-            <View style={{ height: 25 }} />
+            <View style={styles.br} />
             {switchUser ? (
                 <SwitchUser
-                    username={user.username}
                     onChange={user => {
                         onSwitchUser(user);
                         setSwitchUser(false);
@@ -123,7 +122,8 @@ const UserSettings: React.FC<Props> = ({
                         {saveStatus.text}
                     </Text>
                     <Button
-                        title="Switch user"
+                        title="Recover old user"
+                        type="clear"
                         onPress={() => setSwitchUser(true)}
                     />
                 </View>
@@ -135,6 +135,9 @@ const UserSettings: React.FC<Props> = ({
 const styles = StyleSheet.create({
     container: {
         height: "100%",
+    },
+    br: {
+        height: 25,
     },
 });
 

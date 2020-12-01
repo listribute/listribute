@@ -1,38 +1,35 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
-import EmailInput from "../EmailInput";
 import * as api from "../../api";
-import { AxiosError } from "axios";
 import { User } from "../../model/user";
 
 interface Props {
-    username: string;
     onChange: (user: User) => void;
 }
 
-const SwitchUser: React.FC<Props> = ({ username: usernameProp, onChange }) => {
-    const [username, setUsername] = useState(usernameProp);
-    const [password, setPassword] = useState<string>("");
-    const [showRecover, setShowRecover] = useState(false);
-    const [switchError, setSwitchError] = useState<string>();
-    const [recoverStatus, setRecoverStatus] = useState({
-        success: true,
-        text: "",
-    });
+const SwitchUser: React.FC<Props> = ({ onChange }) => {
+    const [step, setStep] = useState(1);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [loginError, setLoginError] = useState<string>();
+    const [recoverError, setRecoverError] = useState<string>();
+    const [user, setUser] = useState<User>();
 
     const switchUser = async () => {
+        if (!password) return;
         const cred = { username, password };
         try {
             const user = await api.login(cred);
-            onChange(user);
+            setUser(user);
+            setStep(3);
         } catch (error) {
             switch (error?.response?.status) {
                 case 401:
-                    setSwitchError("Wrong username/password");
+                    setLoginError("Wrong password");
                     break;
                 default:
-                    setSwitchError(
+                    setLoginError(
                         `Server error(${error?.response?.status}). Try again later.`,
                     );
             }
@@ -40,74 +37,96 @@ const SwitchUser: React.FC<Props> = ({ username: usernameProp, onChange }) => {
     };
 
     const recoverPassword = async () => {
-        if (!showRecover) {
-            setShowRecover(true);
-            return;
-        }
+        if (!username) return;
 
         try {
             await api.sendPassword(username);
-            setRecoverStatus({
-                success: true,
-                text: "Email sent successfully",
-            });
+            setStep(2);
         } catch (error) {
             switch (error?.response?.status) {
                 case 400:
-                    setRecoverStatus({
-                        success: false,
-                        text: "Unknown username",
-                    });
+                    setRecoverError("Unknown username");
                     break;
                 case 404:
-                    setRecoverStatus({
-                        success: false,
-                        text: "User has not configured email",
-                    });
+                    setRecoverError("User has not configured email");
                     break;
                 default:
-                    setRecoverStatus({
-                        success: false,
-                        text: `Server error(${error?.response?.status}). Try again later.`,
-                    });
+                    setRecoverError(
+                        `Server error(${error?.response?.status}). Try again later.`,
+                    );
             }
         }
     };
 
-    return (
+    return step === 1 ? (
         <View>
             <Input
-                label="Username"
-                placeholder="username"
-                leftIcon={{ name: "edit" }}
+                label="Old username or email"
+                placeholder="username/email"
+                leftIcon={{ name: "person" }}
                 onChangeText={setUsername}
                 value={username}
             />
+            <Button
+                title="Recover user"
+                type={"clear"}
+                onPress={recoverPassword}
+            />
+            {recoverError && (
+                <Text style={styles.errorText}>{recoverError}</Text>
+            )}
+        </View>
+    ) : step === 2 ? (
+        <View>
             <Input
-                label="Password"
+                label="Password from email"
                 placeholder="password"
                 leftIcon={{ name: "lock" }}
                 onChangeText={setPassword}
                 value={password}
+                secureTextEntry
             />
-            <Button title="Switch user" onPress={switchUser} />
-            <Text style={{ color: "red" }}>{switchError}</Text>
-            {showRecover && (
+            <Text style={styles.text}>
+                An email with your password has been sent to you.
+            </Text>
+            <Button title="Login" type="clear" onPress={switchUser} />
+            <Text style={styles.errorText}>{loginError}</Text>
+        </View>
+    ) : step === 3 && user ? (
+        <View>
+            <Text style={styles.text}>
+                You have successfully recovered your user.
+            </Text>
+            <Button
+                type="clear"
+                title="Go back"
+                onPress={() => onChange(user)}
+            />
+        </View>
+    ) : (
+        <Text style={styles.text}>Something went wrong...</Text>
+    );
+
+    {
+        /* {showRecover && (
                 <Text style={{ padding: 10 }}>
                     An email will be sent to the configured email address of the
                     username entered above.
                 </Text>
-            )}
-            <Button
-                title="Recover password"
-                type={showRecover ? "solid" : "clear"}
-                onPress={recoverPassword}
-            />
-            <Text style={{ color: recoverStatus.success ? "green" : "red" }}>
-                {recoverStatus.text}
-            </Text>
-        </View>
-    );
+            )} */
+    }
 };
+
+const styles = StyleSheet.create({
+    errorText: {
+        color: "red",
+        padding: 10,
+        textAlign: "center",
+    },
+    text: {
+        padding: 10,
+        textAlign: "center",
+    },
+});
 
 export default SwitchUser;
