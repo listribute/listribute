@@ -1,6 +1,9 @@
 {
-    "tabWidth": 4,
-    "useTabs": false,
+    "arrowParens": "avoid",
+    "bracketSameLine": true,
+    "bracketSpacing": false,
+    "singleQuote": false,
     "trailingComma": "all",
-    "arrowParens": "avoid"
+    "tabWidth": 4,
+    "useTabs": false
 }
