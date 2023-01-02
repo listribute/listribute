@@ -29,7 +29,7 @@ const ListributeHeader: React.FC<Props> = props => {
             containerStyle={Platform.select({
                 android:
                     Platform.Version <= 20 ? { paddingTop: 0, height: 56 } : {},
-                default: { paddingTop: 0, height: 44 },
+                default: {},
             })}
             backgroundColor={listributeRed}
         />
