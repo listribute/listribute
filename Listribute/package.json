@@ -11,13 +11,13 @@
     },
     "dependencies": {
         "@react-native-community/async-storage": "^1.12.0",
-        "axios": "^0.20.0",
+        "axios": "^1.2.2",
         "react": "18.2.0",
         "react-native": "0.71.0-rc.5",
-        "react-native-elements": "^2.3.2",
+        "react-native-elements": "^3.4.3",
         "react-native-swipe-list-view": "^3.2.4",
-        "react-native-vector-icons": "^7.1.0",
-        "rxjs": "^6.6.3"
+        "react-native-vector-icons": "^9.2.0",
+        "rxjs": "^7.8.0"
     },
     "devDependencies": {
         "@babel/core": "^7.12.9",
