@@ -384,8 +384,8 @@ PODS:
     - React-jsi (= 0.71.0-rc.5)
     - React-logger (= 0.71.0-rc.5)
     - React-perflogger (= 0.71.0-rc.5)
-  - RNCAsyncStorage (1.12.0):
-    - React
+  - RNCAsyncStorage (1.17.11):
+    - React-Core
   - RNVectorIcons (9.2.0):
     - React-Core
   - SocketRocket (0.6.0)
@@ -453,7 +453,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -545,7 +545,7 @@ EXTERNAL SOURCES:
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
-    :path: "../node_modules/@react-native-community/async-storage"
+    :path: "../node_modules/@react-native-async-storage/async-storage"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -599,7 +599,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 06d81498c64ce27065796bf44c6b101c7ab76e1f
   React-runtimeexecutor: b7dcd6b5cdef671b6177cae517a68e37437989e1
   ReactCommon: 22ec04726eb397686d75debf5ea97c09b6abab83
-  RNCAsyncStorage: 2a692bcb9b69b76a2f1a95f33db057129700af64
+  RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 81db1f51b5d3ea7eeb1b76a6890caffa45229cb2
