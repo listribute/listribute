@@ -14,10 +14,16 @@ import { itemsObservable } from "../api";
 interface Props {
     username: string;
     list: List;
+    onNewList: (list: List) => void;
     onBack: () => void;
 }
 
-const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
+const ListPage: React.FC<Props> = ({
+    username,
+    list: listProp,
+    onNewList,
+    onBack,
+}) => {
     useBackButton(onBack);
 
     const [list, setList] = useState(listProp);
@@ -28,6 +34,8 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                 let mounted = true;
                 (async () => {
                     const newList = await api.createNewList(list.wishList);
+
+                    onNewList(newList);
 
                     if (mounted) setList(newList);
                 })();

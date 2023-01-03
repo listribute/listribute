@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
 import { Button, Card, Icon, ListItem, Text } from "@rneui/base";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
-import * as api from "../api";
 import { listsObservable } from "../api";
-import useAsyncEffect from "../hooks/useAsyncEffect";
 import { List } from "../model/list";
 import { User } from "../model/user";
 import { listributeRed } from "./colors";
@@ -12,6 +10,10 @@ import Header from "./Header";
 
 interface Props {
     user: User;
+    lists: List[];
+    addList: (list: List) => void;
+    removeList: (list: List) => void;
+    refreshLists: () => Promise<void>;
     onSelectList: (list: List) => void;
     onEditList: (list: List) => void;
     onOpenUserSettings: () => void;
@@ -19,44 +21,34 @@ interface Props {
 
 const HomePage: React.FC<Props> = ({
     user,
+    lists,
+    addList,
+    removeList,
+    refreshLists,
     onSelectList,
     onEditList,
     onOpenUserSettings,
 }) => {
-    const [lists, setLists] = useState<List[]>();
-
-    useAsyncEffect(api.getAllLists, setLists, []);
     useEffect(() => {
-        const subscription = listsObservable.subscribe(setLists);
+        const subscription = listsObservable.subscribe(addList);
         return () => {
             subscription.unsubscribe();
         };
-    }, []);
+    }, [addList]);
 
-    const addList = () => {
+    const createList = () => {
         onSelectList({
             name: new Date().toDateString(),
             wishList: false,
         });
     };
 
-    const deleteList = async (list: List) => {
-        if (lists) {
-            const idx = lists.indexOf(list);
-            if (idx > -1 && lists[idx].id) {
-                await api.removeListForUser(lists[idx].id!);
-            }
-            setLists([...lists.slice(0, idx), ...lists.slice(idx + 1)]);
-        }
-    };
-
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const refresh = async () => {
         setIsRefreshing(true);
-        const updated = await api.getAllLists();
+        await refreshLists();
         setIsRefreshing(false);
-        setLists(updated);
     };
 
     return (
@@ -74,7 +66,7 @@ const HomePage: React.FC<Props> = ({
                 rightComponent={{
                     icon: "add",
                     color: "white",
-                    onPress: addList,
+                    onPress: createList,
                 }}
             />
 
@@ -114,7 +106,7 @@ const HomePage: React.FC<Props> = ({
                                     titleStyle={{ color: "white" }}
                                     onPress={() => {
                                         rowMap[index.toString()].closeRow();
-                                        deleteList(list);
+                                        removeList(list);
                                     }}
                                 />
                             </View>
@@ -155,7 +147,7 @@ const HomePage: React.FC<Props> = ({
                         buttonStyle={{ backgroundColor: listributeRed }}
                         icon={<Icon name="add" color="white" />}
                         title="Add new list"
-                        onPress={addList}
+                        onPress={createList}
                     />
                 </Card>
             )}

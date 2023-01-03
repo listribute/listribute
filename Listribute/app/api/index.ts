@@ -181,18 +181,16 @@ export const removeListForUser = (listId: number): Promise<void> => {
 
 // TODO: Create persistent websocket connection
 
-export const listsObservable: Observable<List[]> = new Observable(
-    _subscriber => {
-        // TODO: Subscribe to lists updates over websocket connection
-        // setTimeout(() => {
-        //     subscriber.next([]);
-        // }, 5000);
+export const listsObservable: Observable<List> = new Observable(_subscriber => {
+    // TODO: Subscribe to new list updates over websocket connection
+    // setTimeout(() => {
+    //     subscriber.next({...});
+    // }, 5000);
 
-        return () => {
-            // TODO: Dispose subscription
-        };
-    },
-);
+    return () => {
+        // TODO: Dispose subscription
+    };
+});
 
 export const itemsObservable = (_listId: number): Observable<Item[]> =>
     new Observable(_subscriber => {

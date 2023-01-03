@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { SafeAreaView } from "react-native";
 import * as api from "./api";
 import HomePage from "./components/HomePage";
@@ -12,6 +12,7 @@ import useAsyncEffect from "./hooks/useAsyncEffect";
 
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User>();
+    const [lists, setLists] = useState<List[]>([]);
     const [currentList, setCurrentList] = useState<List>();
     const [editList, setEditList] = useState<List>();
     const [userSettingsOpen, setUserSettingsOpen] = useState(false);
@@ -33,10 +34,42 @@ const App: React.FC = () => {
         [],
     );
 
+    useAsyncEffect(
+        () =>
+            currentUser != null
+                ? api.getAllLists()
+                : Promise.resolve(undefined),
+        result => result && setLists(result),
+        [currentUser],
+    );
+
     const switchUser = (user: User) => {
         storage.setUser(user);
         setCurrentUser(user);
     };
+
+    const addList = useCallback(
+        (list: List) => {
+            setLists([...lists, list]);
+        },
+        [lists],
+    );
+
+    const removeList = useCallback(
+        async (list: List) => {
+            const idx = lists.indexOf(list);
+            if (idx > -1 && lists[idx].id) {
+                await api.removeListForUser(lists[idx].id!);
+            }
+            setLists([...lists.slice(0, idx), ...lists.slice(idx + 1)]);
+        },
+        [lists],
+    );
+
+    const refreshLists = useCallback(async () => {
+        const updated = await api.getAllLists();
+        setLists(updated);
+    }, []);
 
     return currentUser === undefined ? null : (
         <SafeAreaView>
@@ -44,6 +77,7 @@ const App: React.FC = () => {
                 <ListPage
                     username={currentUser.username}
                     list={currentList}
+                    onNewList={addList}
                     onBack={() => setCurrentList(undefined)}
                 />
             ) : editList ? (
@@ -61,6 +95,10 @@ const App: React.FC = () => {
             ) : (
                 <HomePage
                     user={currentUser}
+                    lists={lists}
+                    addList={addList}
+                    removeList={removeList}
+                    refreshLists={refreshLists}
                     onSelectList={list => setCurrentList(list)}
                     onEditList={list => setEditList(list)}
                     onOpenUserSettings={() => setUserSettingsOpen(true)}
