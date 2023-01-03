@@ -25,9 +25,16 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
     useEffect(
         () => {
             if (!list.id) {
+                let mounted = true;
                 (async () => {
-                    setList(await api.createNewList(list.wishList));
+                    const newList = await api.createNewList(list.wishList);
+
+                    if (mounted) setList(newList);
                 })();
+
+                return () => {
+                    mounted = false;
+                };
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
