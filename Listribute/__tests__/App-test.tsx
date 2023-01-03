@@ -12,7 +12,7 @@ import * as storage from "../app/storage";
 
 jest.mock("../app/storage", () => ({
     getUser: async () => undefined,
-    setUser: async (user: User) => undefined,
+    setUser: async (_user: User) => undefined,
 }));
 
 jest.mock("../app/api", () => ({

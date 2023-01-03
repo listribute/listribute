@@ -6,17 +6,21 @@ const useAsyncEffect = <T>(
     apply: (result: T) => void,
     deps?: DependencyList,
 ) => {
-    useEffect(() => {
-        let cancelled = false;
+    useEffect(
+        () => {
+            let cancelled = false;
 
-        asyncCall().then(result => {
-            if (!cancelled) apply(result);
-        });
+            asyncCall().then(result => {
+                if (!cancelled) apply(result);
+            });
 
-        return () => {
-            cancelled = true;
-        };
-    }, deps);
+            return () => {
+                cancelled = true;
+            };
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        deps,
+    );
 };
 
 export default useAsyncEffect;

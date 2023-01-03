@@ -31,7 +31,7 @@ const HomePage: React.FC<Props> = ({
         return () => {
             subscription.unsubscribe();
         };
-    });
+    }, []);
 
     const addList = () => {
         onSelectList({
@@ -88,8 +88,7 @@ const HomePage: React.FC<Props> = ({
                     renderItem={({ item: list }) => (
                         <ListItem
                             onPress={() => onSelectList(list)}
-                            bottomDivider
-                        >
+                            bottomDivider>
                             <Icon
                                 name={
                                     list.subscribers &&

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, TextInput, View } from "react-native";
 import { Input } from "@rneui/base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
@@ -22,24 +22,27 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
 
     const [list, setList] = useState(listProp);
 
-    useEffect(() => {
-        if (!list.id) {
-            (async () => {
-                setList(await api.createNewList(list.wishList));
-            })();
-        }
-    }, []);
+    useEffect(
+        () => {
+            if (!list.id) {
+                (async () => {
+                    setList(await api.createNewList(list.wishList));
+                })();
+            }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
 
     const [items, setItems] = useState<Item[]>();
 
     useAsyncEffect(
         () =>
-            list.id
-                ? api.getListItems(list.id)
-                : Promise.resolve<Item[]>(undefined!),
+            list.id ? api.getListItems(list.id) : Promise.resolve(undefined),
         setItems,
         [list.id],
     );
+
     useEffect(() => {
         if (!list.id) return;
 
@@ -52,7 +55,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
     const [inputFocused, setInputFocused] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
-    const [inputRef, setInputRef] = useState<Input>();
+    const inputRef = useRef<(Input & TextInput) | null>(null);
 
     const addItem = async (blur: boolean) => {
         if (inputValue && list.id) {
@@ -64,8 +67,8 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
 
             setItems([item, ...(items ?? [])]);
 
-            if (inputRef && blur) {
-                inputRef.blur();
+            if (inputRef.current && blur) {
+                inputRef.current.blur();
             }
         }
         setInputValue("");
@@ -100,7 +103,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                 }}
             />
             <Input
-                ref={input => input && setInputRef(input)}
+                ref={inputRef}
                 placeholder="New item"
                 leftIcon={{ name: "edit" }}
                 onFocus={() => setInputFocused(true)}
@@ -135,7 +138,7 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                     tension={150}
                     leftOpenValue={150}
                     disableLeftSwipe
-                ></SwipeListView>
+                />
             )}
 
             {!items && <Text>Loading...</Text>}

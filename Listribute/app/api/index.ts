@@ -86,13 +86,13 @@ export const testUsername = (username: string): Promise<void> => {
     return client.get(`${endpoints.user}/test/${username}`);
 };
 
-export const registerGCMToken = (token: string): Promise<void> => {
+export const registerGCMToken = (_token: string): Promise<void> => {
     return Promise.reject("Not implemented");
 
     // return $http.post(settings.baseUrl + '/user/token/android', {token: token});
 };
 
-export const registerAPNToken = (token: string): Promise<void> => {
+export const registerAPNToken = (_token: string): Promise<void> => {
     return Promise.reject("Not implemented");
 
     // return $http.post(settings.baseUrl + '/user/token/ios', {token: token});
@@ -144,7 +144,7 @@ export const createNewItem = (item: {
         .then(response => response.data);
 };
 
-export const updateItem = (item: Item): Promise<void> => {
+export const updateItem = (_item: Item): Promise<void> => {
     return Promise.reject("Not implemented");
 
     // return $http.put(settings.baseUrl + '/item', item);
@@ -182,7 +182,7 @@ export const removeListForUser = (listId: number): Promise<void> => {
 // TODO: Create persistent websocket connection
 
 export const listsObservable: Observable<List[]> = new Observable(
-    subscriber => {
+    _subscriber => {
         // TODO: Subscribe to lists updates over websocket connection
         // setTimeout(() => {
         //     subscriber.next([]);
@@ -194,8 +194,8 @@ export const listsObservable: Observable<List[]> = new Observable(
     },
 );
 
-export const itemsObservable = (listId: number): Observable<Item[]> =>
-    new Observable(subscriber => {
+export const itemsObservable = (_listId: number): Observable<Item[]> =>
+    new Observable(_subscriber => {
         // TODO: Subscribe to items updates over websocket connection
         // setTimeout(() => {
         //     subscriber.next([]);

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { Input, InputProps } from "@rneui/base";
 
 interface Props extends InputProps {
@@ -9,7 +9,7 @@ interface Props extends InputProps {
 }
 
 const EmailInput: React.FC<Props> = ({ forwardedRef, ...props }) => {
-    const [emailValid, setEmailValid] = useState(true);
+    const [emailValid, _setEmailValid] = useState(true);
 
     const [inputRef, setInputRef] = useState<Input | null>(null);
     useEffect(() => {
@@ -20,21 +20,22 @@ const EmailInput: React.FC<Props> = ({ forwardedRef, ...props }) => {
         if (inputRef) {
             // TODO: Add event listener and validate input
         }
-    }, [inputRef]);
+    }, [forwardedRef, inputRef]);
 
     return (
         <Input
-            ref={setInputRef}
-            errorMessage={emailValid ? undefined : "Please enter valid email"}
             {...props}
+            ref={(input: any) => setInputRef(input)}
+            errorMessage={emailValid ? undefined : "Please enter valid email"}
         />
     );
 };
 
-const validateEmail = (email: string) => {
-    const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    return emailPattern.test(email);
-};
+// const validateEmail = (email: string) => {
+//     const emailPattern =
+//         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+//     return emailPattern.test(email);
+// };
 
 export default forwardRef<Input, InputProps>((props, ref) => (
     <EmailInput forwardedRef={ref} {...props} />

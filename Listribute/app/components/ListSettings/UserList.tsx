@@ -19,7 +19,7 @@ const UserList: React.FC<Props> = ({ currentUser, users: usersProp }) => {
                     <Icon name="person" />
                     <ListItem.Content>
                         <ListItem.Title>
-                            {user == currentUser ? `${user} (YOU)` : user}
+                            {user === currentUser ? `${user} (YOU)` : user}
                         </ListItem.Title>
                     </ListItem.Content>
                 </ListItem>

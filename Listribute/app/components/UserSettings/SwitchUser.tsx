@@ -20,10 +20,10 @@ const SwitchUser: React.FC<Props> = ({ onChange }) => {
         if (!password) return;
         const cred = { username, password };
         try {
-            const user = await api.login(cred);
-            setUser(user);
+            const recoveredUser = await api.login(cred);
+            setUser(recoveredUser);
             setStep(3);
-        } catch (error) {
+        } catch (error: any) {
             switch (error?.response?.status) {
                 case 401:
                     setLoginError("Wrong password");
@@ -42,7 +42,7 @@ const SwitchUser: React.FC<Props> = ({ onChange }) => {
         try {
             await api.sendPassword(username);
             setStep(2);
-        } catch (error) {
+        } catch (error: any) {
             switch (error?.response?.status) {
                 case 400:
                     setRecoverError("Unknown username");
@@ -107,6 +107,7 @@ const SwitchUser: React.FC<Props> = ({ onChange }) => {
         <Text style={styles.text}>Something went wrong...</Text>
     );
 
+    // eslint-disable-next-line no-lone-blocks, no-unreachable
     {
         /* {showRecover && (
                 <Text style={{ padding: 10 }}>

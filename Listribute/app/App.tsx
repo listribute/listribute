@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native";
 import * as api from "./api";
 import HomePage from "./components/HomePage";

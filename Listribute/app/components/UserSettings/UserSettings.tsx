@@ -67,7 +67,7 @@ const UserSettings: React.FC<Props> = ({
             const updatedUser = await api.updateUser(user);
             onSwitchUser(updatedUser);
             setSaveStatus({ success: true, text: "User settings saved" });
-        } catch (error) {
+        } catch (error: any) {
             switch (error?.response?.status) {
                 case 409:
                     setSaveStatus({
@@ -103,8 +103,8 @@ const UserSettings: React.FC<Props> = ({
             <View style={styles.br} />
             {switchUser ? (
                 <SwitchUser
-                    onChange={user => {
-                        onSwitchUser(user);
+                    onChange={recoveredUser => {
+                        onSwitchUser(recoveredUser);
                         setSwitchUser(false);
                     }}
                 />
@@ -117,8 +117,7 @@ const UserSettings: React.FC<Props> = ({
                     />
                     <EmailInput email={user.email ?? ""} onChange={setEmail} />
                     <Text
-                        style={{ color: saveStatus.success ? "green" : "red" }}
-                    >
+                        style={{ color: saveStatus.success ? "green" : "red" }}>
                         {saveStatus.text}
                     </Text>
                     <Button

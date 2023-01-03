@@ -19,7 +19,7 @@ export const ListItem: React.FC<ListItemProps> = ({
         setItem(itemProp);
     }, [itemProp]);
 
-    const checkItem = (item: Item) => {
+    const checkItem = () => {
         const idx = item.checkedBy!.indexOf(username);
         if (idx > -1) {
             item.checkedBy!.splice(idx, 1);
@@ -45,7 +45,7 @@ export const ListItem: React.FC<ListItemProps> = ({
                         ? "radio-button-checked"
                         : "radio-button-unchecked"
                 }
-                onPress={() => checkItem(item)}
+                onPress={checkItem}
             />
             <RNE.ListItem.Content>
                 <RNE.ListItem.Title>{item.name}</RNE.ListItem.Title>
@@ -74,8 +74,7 @@ export const HiddenListItem: React.FC<HiddenListItemProps> = ({
             style={{
                 alignItems: "flex-start",
                 backgroundColor: listributeRed,
-            }}
-        >
+            }}>
             <RNE.Button
                 icon={{ name: "delete", color: "white" }}
                 title="Delete"
