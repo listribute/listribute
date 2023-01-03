@@ -1,42 +1,36 @@
-import React, { forwardRef, useEffect, useState } from "react";
 import { Input, InputProps } from "@rneui/base";
+import React, { forwardRef, useState } from "react";
+import { TextInput } from "react-native";
 
 interface Props extends InputProps {
-    forwardedRef:
-        | ((instance: Input | null) => void)
-        | React.MutableRefObject<Input | null>
-        | null;
+    forwardedRef: React.ForwardedRef<Input & TextInput>;
 }
 
 const EmailInput: React.FC<Props> = ({ forwardedRef, ...props }) => {
-    const [emailValid, _setEmailValid] = useState(true);
-
-    const [inputRef, setInputRef] = useState<Input | null>(null);
-    useEffect(() => {
-        if (forwardedRef != null) {
-            if (typeof forwardedRef === "function") forwardedRef(inputRef);
-            else forwardedRef.current = inputRef;
-        }
-        if (inputRef) {
-            // TODO: Add event listener and validate input
-        }
-    }, [forwardedRef, inputRef]);
+    const [emailValid, setEmailValid] = useState(true);
 
     return (
         <Input
             {...props}
-            ref={(input: any) => setInputRef(input)}
-            errorMessage={emailValid ? undefined : "Please enter valid email"}
+            ref={forwardedRef}
+            errorMessage={
+                props.errorMessage ??
+                (emailValid ? undefined : "Please enter a valid email address")
+            }
+            onChangeText={text => {
+                setEmailValid(validateEmail(text));
+                props.onChangeText?.(text);
+            }}
         />
     );
 };
 
-// const validateEmail = (email: string) => {
-//     const emailPattern =
-//         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-//     return emailPattern.test(email);
-// };
+const validateEmail = (email: string) => {
+    const emailPattern =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    return emailPattern.test(email);
+};
 
-export default forwardRef<Input, InputProps>((props, ref) => (
+export default forwardRef<Input & TextInput, InputProps>((props, ref) => (
     <EmailInput forwardedRef={ref} {...props} />
 ));
