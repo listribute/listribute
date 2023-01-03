@@ -6,7 +6,7 @@ import { User } from "../../model/user";
 import UsernameInput from "./UsernameInput";
 import EmailInput from "./EmailInput";
 import SwitchUser from "./SwitchUser";
-import { Button } from "react-native-elements";
+import { Button } from "@rneui/base";
 import * as api from "../../api";
 
 interface Props {

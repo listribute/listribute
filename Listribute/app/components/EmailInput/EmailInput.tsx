@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
-import { Input, InputProps } from "react-native-elements";
+import { Input, InputProps } from "@rneui/base";
 
 interface Props extends InputProps {
     forwardedRef:

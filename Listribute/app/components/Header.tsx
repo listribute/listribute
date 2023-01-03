@@ -1,5 +1,5 @@
 import React from "react";
-import { Header, HeaderProps } from "react-native-elements";
+import { Header, HeaderProps } from "@rneui/base";
 import { Platform, GestureResponderEvent } from "react-native";
 import { listributeRed } from "./colors";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckBox } from "react-native-elements";
+import { CheckBox } from "@rneui/base";
 import { Alert } from "react-native";
 
 interface Props {

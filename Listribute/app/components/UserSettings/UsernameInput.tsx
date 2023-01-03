@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input } from "react-native-elements";
+import { Input } from "@rneui/base";
 
 interface Props {
     username: string;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Platform, Text, View } from "react-native";
-import { Input } from "react-native-elements";
+import { Text, View } from "react-native";
+import { Input } from "@rneui/base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
 import useBackButton from "../hooks/useBackButton";
@@ -95,7 +95,6 @@ const ListPage: React.FC<Props> = ({ username, list: listProp, onBack }) => {
                 rightComponent={{
                     icon: inputFocused ? "add" : "more-vert",
                     color: "white",
-                    underlayColor: "transparent",
                     onPress: () =>
                         inputFocused ? addItem(true) : toggleMoreMenu(),
                 }}

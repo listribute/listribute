@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Card, Icon, ListItem, Text } from "react-native-elements";
+import { Button, Card, Icon, ListItem, Text } from "@rneui/base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import * as api from "../api";
 import { listsObservable } from "../api";
@@ -65,7 +65,6 @@ const HomePage: React.FC<Props> = ({
                 leftComponent={{
                     icon: "settings",
                     color: "white",
-                    underlayColor: "transparent",
                     onPress: onOpenUserSettings,
                 }}
                 centerComponent={{
@@ -75,7 +74,6 @@ const HomePage: React.FC<Props> = ({
                 rightComponent={{
                     icon: "add",
                     color: "white",
-                    underlayColor: "transparent",
                     onPress: addList,
                 }}
             />

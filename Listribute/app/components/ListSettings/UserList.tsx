@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
-import { Icon, ListItem } from "react-native-elements";
+import { Icon, ListItem } from "@rneui/base";
 
 interface Props {
     currentUser: string;

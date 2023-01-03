@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import * as RNE from "react-native-elements";
+import * as RNE from "@rneui/base";
 import * as api from "../api";
 import { Item } from "../model/item";
 import { listributeRed } from "./colors";

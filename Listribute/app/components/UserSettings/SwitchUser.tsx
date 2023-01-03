@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, Input } from "react-native-elements";
+import { Button, Input } from "@rneui/base";
 import * as api from "../../api";
 import { User } from "../../model/user";
 

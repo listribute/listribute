@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input } from "react-native-elements";
+import { Input } from "@rneui/base";
 
 interface Props {
     onSubmit: (newName: string) => void;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Input } from "react-native-elements";
+import { Input } from "@rneui/base";
 
 interface Props {
     name: string;
