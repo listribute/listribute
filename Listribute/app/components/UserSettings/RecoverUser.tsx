@@ -8,7 +8,7 @@ interface Props {
     onChange: (user: User) => void;
 }
 
-const SwitchUser: React.FC<Props> = ({ onChange }) => {
+const RecoverUser: React.FC<Props> = ({ onChange }) => {
     const [step, setStep] = useState(1);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -130,4 +130,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SwitchUser;
+export default RecoverUser;

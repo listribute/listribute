@@ -5,7 +5,7 @@ import useBackButton from "../../hooks/useBackButton";
 import { User } from "../../model/user";
 import UsernameInput from "./UsernameInput";
 import EmailInput from "./EmailInput";
-import SwitchUser from "./SwitchUser";
+import RecoverUser from "./RecoverUser";
 import { Button } from "@rneui/base";
 import * as api from "../../api";
 
@@ -102,7 +102,7 @@ const UserSettings: React.FC<Props> = ({
             />
             <View style={styles.br} />
             {switchUser ? (
-                <SwitchUser
+                <RecoverUser
                     onChange={recoveredUser => {
                         onSwitchUser(recoveredUser);
                         setSwitchUser(false);
