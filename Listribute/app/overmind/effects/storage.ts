@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { User } from "../model/user";
+import { User } from "../../model/user";
 
 const USER_KEY = "LISTRIBUTE_USER";
 

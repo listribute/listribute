@@ -1,14 +1,17 @@
+import { Button, Input } from "@rneui/base";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, Input } from "@rneui/base";
-import * as api from "../../api";
 import { User } from "../../model/user";
+import { useAppState, useEffects } from "../../overmind";
 
 interface Props {
     onChange: (user: User) => void;
 }
 
 const RecoverUser: React.FC<Props> = ({ onChange }) => {
+    useAppState();
+    const effects = useEffects();
+
     const [step, setStep] = useState(1);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -20,7 +23,7 @@ const RecoverUser: React.FC<Props> = ({ onChange }) => {
         if (!password) return;
         const cred = { username, password };
         try {
-            const recoveredUser = await api.login(cred);
+            const recoveredUser = await effects.api.login(cred);
             setUser(recoveredUser);
             setStep(3);
         } catch (error: any) {
@@ -40,7 +43,7 @@ const RecoverUser: React.FC<Props> = ({ onChange }) => {
         if (!username) return;
 
         try {
-            await api.sendPassword(username);
+            await effects.api.sendPassword(username);
             setStep(2);
         } catch (error: any) {
             switch (error?.response?.status) {

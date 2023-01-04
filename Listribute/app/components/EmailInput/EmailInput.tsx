@@ -1,12 +1,15 @@
 import { Input, InputProps } from "@rneui/base";
 import React, { forwardRef, useState } from "react";
 import { TextInput } from "react-native";
+import { useAppState } from "../../overmind";
 
 interface Props extends InputProps {
     forwardedRef: React.ForwardedRef<Input & TextInput>;
 }
 
 const EmailInput: React.FC<Props> = ({ forwardedRef, ...props }) => {
+    useAppState();
+
     const [emailValid, setEmailValid] = useState(true);
 
     return (

@@ -1,40 +1,25 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import useBackButton from "../../hooks/useBackButton";
-import { List } from "../../model/list";
-import Header from "../Header";
-import * as api from "../../api";
-import NameInput from "./NameInput";
-import WishListCheckBox from "./WishListCheckBox";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { RootStackParamList } from "../RootNavigation";
+import { useActions, useAppState } from "../../overmind";
 import AddUserInput from "./AddUserInput";
+import NameInput from "./NameInput";
 import UserList from "./UserList";
+import WishListCheckBox from "./WishListCheckBox";
 
-interface Props {
-    currentUser: string;
-    list: List;
-    onBack: () => void;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "ListSettings">;
 
-const ListSettings: React.FC<Props> = ({
-    currentUser,
-    list: listProp,
-    onBack,
-}) => {
-    useBackButton(onBack);
+const ListSettings: React.FC<Props> = ({ route }) => {
+    const state = useAppState();
+    const actions = useActions();
 
-    const [list, setList] = useState(listProp);
-    const [subscribers, setSubscribers] = useState(listProp.subscribers ?? []);
+    const list = state.listById[route.params.listId];
 
     const setName = async (newName: string) => {
         if (newName) {
-            const updatedList = {
-                ...list,
-                name: newName,
-            };
-
             try {
-                await api.updateList(updatedList);
-                setList(updatedList);
+                await actions.updateListName({ listId: list.id, newName });
             } catch (err) {
                 console.error(err);
                 // TODO: Show error message
@@ -42,15 +27,9 @@ const ListSettings: React.FC<Props> = ({
         }
     };
 
-    const setWishList = async (isWishList: boolean) => {
-        const updatedList = {
-            ...list,
-            wishList: isWishList,
-        };
-
+    const setWishList = async () => {
         try {
-            await api.updateList(updatedList);
-            setList(updatedList);
+            await actions.setAsWishList(list.id);
         } catch (err) {
             console.error(err);
             // TODO: Show error message
@@ -60,8 +39,7 @@ const ListSettings: React.FC<Props> = ({
     const addUser = async (username: string) => {
         if (username) {
             try {
-                await api.addUserToList(list.id!, username);
-                setSubscribers(subscribers.concat(username));
+                await actions.addUserToList({ listId: list.id, username });
             } catch (err) {
                 console.error(err);
                 // TODO: Show error message
@@ -71,20 +49,13 @@ const ListSettings: React.FC<Props> = ({
 
     return (
         <View style={styles.container}>
-            <Header
-                onBackButton={onBack}
-                centerComponent={{
-                    text: list.name,
-                    style: { color: "white", fontSize: 18 },
-                }}
-            />
             <NameInput name={list.name} onChange={setName} />
             <WishListCheckBox
                 isWishList={list.wishList}
-                onChange={setWishList}
+                onSetWishList={setWishList}
             />
             <AddUserInput onSubmit={addUser} />
-            <UserList currentUser={currentUser} users={subscribers} />
+            <UserList users={list.subscribers} />
         </View>
     );
 };

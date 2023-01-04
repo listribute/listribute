@@ -1,122 +1,123 @@
-import React, { useEffect, useRef, useState } from "react";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Button, Input } from "@rneui/base";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Text, TextInput, View } from "react-native";
-import { Input } from "@rneui/base";
 import { SwipeListView } from "react-native-swipe-list-view";
-import * as api from "../api";
-import useBackButton from "../hooks/useBackButton";
+import { RootStackParamList } from "./RootNavigation";
+import useAsyncEffect from "../hooks/useAsyncEffect";
 import { Item } from "../model/item";
 import { List } from "../model/list";
+import { useActions, useAppState, useEffects } from "../overmind";
 import { HiddenListItem, ListItem } from "./ListItem";
-import Header from "./Header";
-import useAsyncEffect from "../hooks/useAsyncEffect";
-import { itemsObservable } from "../api";
 
-interface Props {
-    username: string;
-    list: List;
-    onNewList: (list: List) => void;
-    onBack: () => void;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "List">;
 
-const ListPage: React.FC<Props> = ({
-    username,
-    list: listProp,
-    onNewList,
-    onBack,
-}) => {
-    useBackButton(onBack);
+const ListPage: React.FC<Props> = ({ navigation, route }) => {
+    const state = useAppState();
+    const actions = useActions();
+    const effects = useEffects();
 
-    const [list, setList] = useState(listProp);
-
-    useEffect(
-        () => {
-            if (!list.id) {
-                let mounted = true;
-                (async () => {
-                    const newList = await api.createNewList(list.wishList);
-
-                    onNewList(newList);
-
-                    if (mounted) setList(newList);
-                })();
-
-                return () => {
-                    mounted = false;
-                };
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [],
-    );
-
-    const [items, setItems] = useState<Item[]>();
-
-    useAsyncEffect(
-        () =>
-            list.id ? api.getListItems(list.id) : Promise.resolve(undefined),
-        setItems,
-        [list.id],
+    const [list, setList] = useState<List | null>(
+        (route.params && state.listById[route.params.listId]) ?? null,
     );
 
     useEffect(() => {
-        if (!list.id) return;
+        if (list == null) {
+            let mounted = true;
+            (async () => {
+                const newList = await actions.createList(false);
+                if (mounted) {
+                    setList(newList);
+                    navigation.setParams({ listId: newList.id });
+                }
+            })();
 
-        const subscription = itemsObservable(list.id).subscribe(setItems);
+            return () => {
+                mounted = false;
+            };
+        }
+    }, [list, actions, navigation]);
+
+    const [items, setItems] = useState<Item[] | null>(null);
+
+    useAsyncEffect(
+        () =>
+            list != null
+                ? effects.api.getListItems(list.id)
+                : Promise.resolve(null),
+        setItems,
+        [list],
+    );
+
+    useEffect(() => {
+        if (list == null) return;
+
+        const subscription = effects.api
+            .itemsObservable(list.id)
+            .subscribe(setItems);
+
         return () => {
             subscription.unsubscribe();
         };
-    }, [list.id]);
+    }, [list, effects.api]);
 
     const [inputFocused, setInputFocused] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
     const inputRef = useRef<(Input & TextInput) | null>(null);
 
-    const addItem = async (blur: boolean) => {
-        if (inputValue && list.id) {
-            const item = await api.createNewItem({
-                name: inputValue,
-                listId: list.id,
-                order: 1,
-            });
+    const addItem = useCallback(
+        async (blur: boolean) => {
+            if (inputValue && list) {
+                const item = await effects.api.createNewItem({
+                    name: inputValue,
+                    listId: list.id,
+                    order: 1,
+                });
 
-            setItems([item, ...(items ?? [])]);
+                setItems([item, ...(items ?? [])]);
 
-            if (inputRef.current && blur) {
-                inputRef.current.blur();
+                if (inputRef.current && blur) {
+                    inputRef.current.blur();
+                }
             }
-        }
-        setInputValue("");
-    };
+            setInputValue("");
+        },
+        [inputValue, list, items, effects.api],
+    );
 
     const toggleMoreMenu = () => {};
 
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const refresh = async () => {
-        if (list.id) {
+        if (list) {
             setIsRefreshing(true);
-            const updated = await api.getListItems(list.id);
+            const updated = await effects.api.getListItems(list.id);
             setIsRefreshing(false);
             setItems(updated);
         }
     };
 
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    icon={{
+                        name: inputFocused ? "add" : "more-vert",
+                        color: "white",
+                    }}
+                    type="clear"
+                    onPress={() =>
+                        inputFocused ? addItem(true) : toggleMoreMenu()
+                    }
+                />
+            ),
+        });
+    }, [navigation, addItem, inputFocused]);
+
     return (
         <View style={{ height: "100%" }}>
-            <Header
-                onBackButton={onBack}
-                centerComponent={{
-                    text: list.name,
-                    style: { color: "white", fontSize: 18 },
-                }}
-                rightComponent={{
-                    icon: inputFocused ? "add" : "more-vert",
-                    color: "white",
-                    onPress: () =>
-                        inputFocused ? addItem(true) : toggleMoreMenu(),
-                }}
-            />
             <Input
                 ref={inputRef}
                 placeholder="New item"
@@ -136,9 +137,7 @@ const ListPage: React.FC<Props> = ({
                     keyExtractor={(_, index) => index.toString()}
                     refreshing={isRefreshing}
                     onRefresh={refresh}
-                    renderItem={({ item }) => (
-                        <ListItem username={username} item={item} />
-                    )}
+                    renderItem={({ item }) => <ListItem item={item} />}
                     renderHiddenItem={({ item, index }, rowMap) => (
                         <HiddenListItem
                             item={item}

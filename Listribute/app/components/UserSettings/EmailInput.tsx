@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useAppState } from "../../overmind";
 import CommonEmailInput from "../EmailInput";
 
 interface Props {
@@ -7,6 +8,8 @@ interface Props {
 }
 
 const EmailInput: React.FC<Props> = ({ email: emailProp, onChange }) => {
+    useAppState();
+
     const [email, setEmail] = useState(emailProp);
 
     useEffect(() => {

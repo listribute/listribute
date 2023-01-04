@@ -1,5 +1,6 @@
-import React from "react";
 import { Input } from "@rneui/base";
+import React from "react";
+import { useAppState } from "../../overmind";
 
 interface Props {
     name: string;
@@ -7,6 +8,8 @@ interface Props {
 }
 
 const NameInput: React.FC<Props> = ({ name, onChange }) => {
+    useAppState();
+
     return (
         <Input
             placeholder="List name"

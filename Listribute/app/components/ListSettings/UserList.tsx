@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
 import { Icon, ListItem } from "@rneui/base";
+import React from "react";
+import { Text, View } from "react-native";
+import { useAppState } from "../../overmind";
 
 interface Props {
-    currentUser: string;
     users?: string[];
 }
 
-const UserList: React.FC<Props> = ({ currentUser, users: usersProp }) => {
-    const [users, setUsers] = useState(usersProp);
-
-    useEffect(() => setUsers(usersProp), [usersProp]);
+const UserList: React.FC<Props> = ({ users }) => {
+    const state = useAppState();
 
     return (
         <View style={{ height: "100%" }}>
@@ -19,7 +17,9 @@ const UserList: React.FC<Props> = ({ currentUser, users: usersProp }) => {
                     <Icon name="person" />
                     <ListItem.Content>
                         <ListItem.Title>
-                            {user === currentUser ? `${user} (YOU)` : user}
+                            {user === state.currentUser.username
+                                ? `${user} (YOU)`
+                                : user}
                         </ListItem.Title>
                     </ListItem.Content>
                 </ListItem>

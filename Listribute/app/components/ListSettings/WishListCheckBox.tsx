@@ -1,17 +1,18 @@
-import React from "react";
 import { CheckBox } from "@rneui/base";
+import React from "react";
 import { Alert } from "react-native";
+import { useAppState } from "../../overmind";
 
 interface Props {
     isWishList: boolean;
-    onChange: (isWishList: boolean) => void;
+    onSetWishList: () => void;
 }
 
-const WishListCheckBox: React.FC<Props> = ({ isWishList, onChange }) => {
-    const toggleWishList = () => {
-        if (isWishList) {
-            onChange(false);
-        } else {
+const WishListCheckBox: React.FC<Props> = ({ isWishList, onSetWishList }) => {
+    useAppState();
+
+    const setWishList = () => {
+        if (!isWishList) {
             Alert.alert(
                 "Sure?",
                 "Once set to wish list, it can't be changed back. Are you sure?",
@@ -22,7 +23,7 @@ const WishListCheckBox: React.FC<Props> = ({ isWishList, onChange }) => {
                     },
                     {
                         text: "Sure",
-                        onPress: () => onChange(true),
+                        onPress: () => onSetWishList(),
                     },
                 ],
             );
@@ -35,7 +36,7 @@ const WishListCheckBox: React.FC<Props> = ({ isWishList, onChange }) => {
             title={"Wish list"}
             iconRight
             right
-            onPress={() => !isWishList && toggleWishList()}
+            onPress={setWishList}
         />
     );
 };

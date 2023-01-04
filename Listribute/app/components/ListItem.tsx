@@ -1,34 +1,35 @@
+import * as RNE from "@rneui/base";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import * as RNE from "@rneui/base";
-import * as api from "../api";
 import { Item } from "../model/item";
+import { useAppState, useEffects } from "../overmind";
 import { listributeRed } from "./colors";
 
 interface ListItemProps {
-    username: string;
     item: Item;
 }
 
-export const ListItem: React.FC<ListItemProps> = ({
-    username,
-    item: itemProp,
-}) => {
+export const ListItem: React.FC<ListItemProps> = ({ item: itemProp }) => {
+    const state = useAppState();
+    const effects = useEffects();
+
     const [item, setItem] = useState(itemProp);
     useEffect(() => {
         setItem(itemProp);
     }, [itemProp]);
 
+    const username = state.currentUser.username;
+
     const checkItem = () => {
         const idx = item.checkedBy!.indexOf(username);
         if (idx > -1) {
             item.checkedBy!.splice(idx, 1);
-            api.uncheckItem(item.id!).catch(() => {
+            effects.api.uncheckItem(item.id!).catch(() => {
                 item.checkedBy!.push(username);
             });
         } else {
             item.checkedBy!.push(username);
-            api.checkItem(item.id!).catch(() => {
+            effects.api.checkItem(item.id!).catch(() => {
                 item.checkedBy!.pop();
             });
         }
@@ -63,10 +64,13 @@ export const HiddenListItem: React.FC<HiddenListItemProps> = ({
     item,
     onDeleteItem,
 }) => {
+    useAppState();
+    const effects = useEffects();
+
     const deleteItem = async () => {
         onDeleteItem(item);
 
-        if (item.id) await api.removeItem(item.id);
+        if (item.id) await effects.api.removeItem(item.id);
     };
 
     return (

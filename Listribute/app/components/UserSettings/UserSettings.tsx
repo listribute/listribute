@@ -1,49 +1,31 @@
-import React, { useEffect, useState } from "react";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Button } from "@rneui/base";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Header from "../Header";
-import useBackButton from "../../hooks/useBackButton";
-import { User } from "../../model/user";
-import UsernameInput from "./UsernameInput";
+import { RootStackParamList } from ".././RootNavigation";
+import { useActions, useAppState, useEffects } from "../../overmind";
 import EmailInput from "./EmailInput";
 import RecoverUser from "./RecoverUser";
-import { Button } from "@rneui/base";
-import * as api from "../../api";
+import UsernameInput from "./UsernameInput";
 
-interface Props {
-    user: User;
-    onBack: () => void;
-    onSwitchUser: (user: User) => void;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "UserSettings">;
 
-const UserSettings: React.FC<Props> = ({
-    user: userProp,
-    onBack: onBackProp,
-    onSwitchUser,
-}) => {
-    const onBack = () => {
-        if (switchUser) {
-            setSwitchUser(false);
-        } else {
-            onBackProp?.();
-        }
-    };
-    useBackButton(onBack);
+const UserSettings: React.FC<Props> = ({ navigation }) => {
+    const state = useAppState();
+    const actions = useActions();
+    const effects = useEffects();
 
-    const [user, setUser] = useState(userProp);
+    const [username, setUsername] = useState(state.currentUser.username);
     useEffect(() => {
-        setUser(userProp);
-    }, [userProp]);
+        setUsername(state.currentUser.username);
+    }, [state.currentUser.username]);
 
-    const setUsername = async (newUsername: string) => {
-        const updatedUser = {
-            ...user,
-            username: newUsername,
-        };
-        setUser(updatedUser);
+    const updateUsername = async (newUsername: string) => {
+        setUsername(newUsername);
 
-        if (newUsername !== userProp.username && newUsername !== "") {
+        if (newUsername !== state.currentUser.username && newUsername !== "") {
             try {
-                await api.testUsername(newUsername);
+                await effects.api.testUsername(newUsername);
                 setIsUsernameConflicting(false);
             } catch (err) {
                 setIsUsernameConflicting(true);
@@ -51,21 +33,26 @@ const UserSettings: React.FC<Props> = ({
         }
     };
 
-    const setEmail = (newEmail: string) => {
-        const updatedUser = {
-            ...user,
-            email: newEmail,
-        };
-        setUser(updatedUser);
+    const [email, setEmail] = useState(state.currentUser.email);
+    useEffect(() => {
+        setEmail(state.currentUser.email);
+    }, [state.currentUser.email]);
+
+    const updateEmail = (newEmail: string) => {
+        setEmail(newEmail);
     };
 
     const [isUsernameConflicting, setIsUsernameConflicting] = useState(false);
     const [saveStatus, setSaveStatus] = useState({ success: true, text: "" });
 
-    const save = async () => {
+    const save = useCallback(async () => {
         try {
-            const updatedUser = await api.updateUser(user);
-            onSwitchUser(updatedUser);
+            const updatedUser = await effects.api.updateUser({
+                ...state.currentUser,
+                username,
+                email,
+            });
+            actions.switchUser(updatedUser);
             setSaveStatus({ success: true, text: "User settings saved" });
         } catch (error: any) {
             switch (error?.response?.status) {
@@ -82,40 +69,43 @@ const UserSettings: React.FC<Props> = ({
                     });
             }
         }
-    };
+    }, [state.currentUser, username, email, actions, effects.api]);
 
-    const [switchUser, setSwitchUser] = useState(false);
+    const [recoverUser, setRecoverUser] = useState(false);
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    icon={{
+                        name: "save",
+                        color: "white",
+                    }}
+                    type="clear"
+                    onPress={save}
+                />
+            ),
+        });
+    }, [navigation, save]);
 
     return (
         <View style={styles.container}>
-            <Header
-                onBackButton={onBack}
-                centerComponent={{
-                    text: "User settings",
-                    style: { color: "white", fontSize: 18 },
-                }}
-                rightComponent={{
-                    icon: "save",
-                    color: "white",
-                    onPress: save,
-                }}
-            />
             <View style={styles.br} />
-            {switchUser ? (
+            {recoverUser ? (
                 <RecoverUser
                     onChange={recoveredUser => {
-                        onSwitchUser(recoveredUser);
-                        setSwitchUser(false);
+                        actions.switchUser(recoveredUser);
+                        setRecoverUser(false);
                     }}
                 />
             ) : (
                 <View>
                     <UsernameInput
-                        username={user.username}
-                        onChange={setUsername}
+                        username={username}
+                        onChange={updateUsername}
                         conflicting={isUsernameConflicting}
                     />
-                    <EmailInput email={user.email ?? ""} onChange={setEmail} />
+                    <EmailInput email={email ?? ""} onChange={updateEmail} />
                     <Text
                         style={{ color: saveStatus.success ? "green" : "red" }}>
                         {saveStatus.text}
@@ -123,7 +113,7 @@ const UserSettings: React.FC<Props> = ({
                     <Button
                         title="Recover old user"
                         type="clear"
-                        onPress={() => setSwitchUser(true)}
+                        onPress={() => setRecoverUser(true)}
                     />
                 </View>
             )}

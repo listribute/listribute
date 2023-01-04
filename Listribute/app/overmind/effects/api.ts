@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Observable } from "rxjs";
-import { Item } from "../model/item";
-import { List } from "../model/list";
-import { User } from "../model/user";
+import { Item } from "../../model/item";
+import { List } from "../../model/list";
+import { User } from "../../model/user";
 
 // Credentials set by initialize to be able to re-authenticate
 // when session cookie expires and we receive a 401

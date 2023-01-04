@@ -1,85 +1,56 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button, Card, Icon, ListItem, Text } from "@rneui/base";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
-import { listsObservable } from "../api";
-import { List } from "../model/list";
-import { User } from "../model/user";
+import { RootStackParamList } from "./RootNavigation";
+import { useActions, useAppState, useEffects } from "../overmind";
 import { listributeRed } from "./colors";
-import Header from "./Header";
 
-interface Props {
-    user: User;
-    lists: List[];
-    addList: (list: List) => void;
-    removeList: (list: List) => void;
-    refreshLists: () => Promise<void>;
-    onSelectList: (list: List) => void;
-    onEditList: (list: List) => void;
-    onOpenUserSettings: () => void;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
-const HomePage: React.FC<Props> = ({
-    user,
-    lists,
-    addList,
-    removeList,
-    refreshLists,
-    onSelectList,
-    onEditList,
-    onOpenUserSettings,
-}) => {
+const HomePage: React.FC<Props> = ({ navigation }) => {
+    const state = useAppState();
+    const actions = useActions();
+    const effects = useEffects();
+
     useEffect(() => {
-        const subscription = listsObservable.subscribe(addList);
+        const subscription = effects.api.listsObservable.subscribe(
+            actions.addList,
+        );
         return () => {
             subscription.unsubscribe();
         };
-    }, [addList]);
-
-    const createList = () => {
-        onSelectList({
-            name: new Date().toDateString(),
-            wishList: false,
-        });
-    };
+    }, [actions.addList, effects.api.listsObservable]);
 
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const refresh = async () => {
         setIsRefreshing(true);
-        await refreshLists();
+        await actions.refreshLists();
         setIsRefreshing(false);
+    };
+
+    const goToList = (listId?: number) => {
+        navigation.navigate("List", listId != null ? { listId } : undefined);
+    };
+
+    const goToEditList = (listId: number) => {
+        navigation.navigate("ListSettings", { listId });
     };
 
     return (
         <View style={style.container}>
-            <Header
-                leftComponent={{
-                    icon: "settings",
-                    color: "white",
-                    onPress: onOpenUserSettings,
-                }}
-                centerComponent={{
-                    text: `Hi, ${user.username}`,
-                    style: style.headerCenter,
-                }}
-                rightComponent={{
-                    icon: "add",
-                    color: "white",
-                    onPress: createList,
-                }}
-            />
-
-            {lists && lists.length > 0 && (
+            {state.lists.length > 0 && (
                 <SwipeListView
                     useFlatList
-                    data={lists}
+                    data={state.lists}
                     keyExtractor={(_, index) => index.toString()}
                     refreshing={isRefreshing}
                     onRefresh={refresh}
                     renderItem={({ item: list }) => (
                         <ListItem
-                            onPress={() => onSelectList(list)}
+                            onPress={() => goToList(list.id)}
                             bottomDivider>
                             <Icon
                                 name={
@@ -106,7 +77,7 @@ const HomePage: React.FC<Props> = ({
                                     titleStyle={{ color: "white" }}
                                     onPress={() => {
                                         rowMap[index.toString()].closeRow();
-                                        removeList(list);
+                                        actions.removeList(list.id);
                                     }}
                                 />
                             </View>
@@ -119,7 +90,7 @@ const HomePage: React.FC<Props> = ({
                                     titleStyle={{ color: "darkgrey" }}
                                     onPress={() => {
                                         rowMap[index.toString()].closeRow();
-                                        onEditList(list);
+                                        goToEditList(list.id);
                                     }}
                                 />
                             </View>
@@ -134,9 +105,7 @@ const HomePage: React.FC<Props> = ({
                 />
             )}
 
-            {!lists && <Text>Loading...</Text>}
-
-            {lists?.length === 0 && (
+            {state.lists.length === 0 && (
                 <Card>
                     <Card.Title>Welcome</Card.Title>
                     <Card.Divider />
@@ -147,7 +116,7 @@ const HomePage: React.FC<Props> = ({
                         buttonStyle={{ backgroundColor: listributeRed }}
                         icon={<Icon name="add" color="white" />}
                         title="Add new list"
-                        onPress={createList}
+                        onPress={() => goToList()}
                     />
                 </Card>
             )}

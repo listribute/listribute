@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
 import { Input } from "@rneui/base";
+import React, { useEffect, useState } from "react";
+import { useAppState } from "../../overmind";
 
 interface Props {
     username: string;
@@ -12,6 +13,8 @@ const UsernameInput: React.FC<Props> = ({
     conflicting,
     onChange,
 }) => {
+    useAppState();
+
     const [username, setUsername] = useState(usernameProp);
 
     useEffect(() => {
