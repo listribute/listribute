@@ -41,7 +41,7 @@ const UserSettings: React.FC<Props> = ({
         };
         setUser(updatedUser);
 
-        if (newUsername !== userProp.username) {
+        if (newUsername !== userProp.username && newUsername !== "") {
             try {
                 await api.testUsername(newUsername);
                 setIsUsernameConflicting(false);
