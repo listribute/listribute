@@ -71,6 +71,7 @@ const RecoverUser: React.FC<Props> = ({ onChange }) => {
                 title="Recover user"
                 type={"clear"}
                 onPress={recoverPassword}
+                disabled={username === ""}
             />
             {recoverError && (
                 <Text style={styles.errorText}>{recoverError}</Text>
