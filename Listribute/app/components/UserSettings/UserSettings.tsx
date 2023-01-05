@@ -10,7 +10,7 @@ import UsernameInput from "./UsernameInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "UserSettings">;
 
-const UserSettings: React.FC<Props> = ({ navigation }) => {
+const UserSettings: React.FC<Props> = () => {
     const state = useAppState();
     const actions = useActions();
     const effects = useEffects();
@@ -43,7 +43,10 @@ const UserSettings: React.FC<Props> = ({ navigation }) => {
     };
 
     const [isUsernameConflicting, setIsUsernameConflicting] = useState(false);
-    const [saveStatus, setSaveStatus] = useState({ success: true, text: "" });
+    const [saveStatus, setSaveStatus] = useState({
+        success: true,
+        text: "\u00a0",
+    });
 
     const save = useCallback(async () => {
         try {
@@ -73,21 +76,6 @@ const UserSettings: React.FC<Props> = ({ navigation }) => {
 
     const [recoverUser, setRecoverUser] = useState(false);
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <Button
-                    icon={{
-                        name: "save",
-                        color: "white",
-                    }}
-                    type="clear"
-                    onPress={save}
-                />
-            ),
-        });
-    }, [navigation, save]);
-
     return (
         <View style={styles.container}>
             {recoverUser ? (
@@ -105,6 +93,15 @@ const UserSettings: React.FC<Props> = ({ navigation }) => {
                         conflicting={isUsernameConflicting}
                     />
                     <EmailInput email={email ?? ""} onChange={updateEmail} />
+                    <Button
+                        title="Save"
+                        icon={{
+                            name: "save",
+                            color: "white",
+                        }}
+                        // type="clear"
+                        onPress={save}
+                    />
                     <Text
                         style={
                             saveStatus.success ? styles.success : styles.failure
