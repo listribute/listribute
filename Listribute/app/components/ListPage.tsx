@@ -228,7 +228,6 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
 
             {items && (
                 <SwipeListView
-                    useFlatList
                     data={items}
                     keyExtractor={(_, index) => index.toString()}
                     refreshing={isRefreshing}

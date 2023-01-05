@@ -43,7 +43,6 @@ const HomePage: React.FC<Props> = ({ navigation }) => {
         <View style={style.container}>
             {state.lists.length > 0 && (
                 <SwipeListView
-                    useFlatList
                     data={state.lists}
                     keyExtractor={(_, index) => index.toString()}
                     refreshing={isRefreshing}
