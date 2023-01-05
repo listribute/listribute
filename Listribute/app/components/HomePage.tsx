@@ -65,7 +65,7 @@ const HomePage: React.FC<Props> = ({ navigation }) => {
                             <ListItem.Chevron />
                         </ListItem>
                     )}
-                    renderHiddenItem={({ item: list, index }, rowMap) => (
+                    renderHiddenItem={({ item: list }, rowMap) => (
                         <View style={style.hiddenItemContainer}>
                             <View style={style.hiddenDelete}>
                                 <Button
@@ -75,7 +75,7 @@ const HomePage: React.FC<Props> = ({ navigation }) => {
                                     buttonStyle={{ height: "100%" }}
                                     titleStyle={{ color: "white" }}
                                     onPress={() => {
-                                        rowMap[index.toString()].closeRow();
+                                        rowMap[list.id.toString()].closeRow();
                                         actions.removeList(list.id);
                                     }}
                                 />
@@ -88,7 +88,7 @@ const HomePage: React.FC<Props> = ({ navigation }) => {
                                     buttonStyle={{ height: "100%" }}
                                     titleStyle={{ color: "darkgrey" }}
                                     onPress={() => {
-                                        rowMap[index.toString()].closeRow();
+                                        rowMap[list.id.toString()].closeRow();
                                         goToEditList(list.id);
                                     }}
                                 />

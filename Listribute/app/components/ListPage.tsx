@@ -253,7 +253,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                         <HiddenListItem
                             item={item}
                             onDeleteItem={() => {
-                                rowMap[index.toString()].closeRow();
+                                rowMap[item.id.toString()].closeRow();
                                 items.splice(index, 1);
                                 setItems(items.slice(0));
                             }}
