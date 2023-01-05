@@ -1,5 +1,5 @@
 import * as RNE from "@rneui/base";
-import React, { useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import { Item } from "../model/item";
 import { useAppState, useEffects } from "../overmind";
@@ -7,42 +7,27 @@ import { listributeRed } from "./colors";
 
 interface ListItemProps {
     item: Item;
+    checkItem: (item: Item) => void;
 }
 
-export const ListItem: React.FC<ListItemProps> = ({ item: itemProp }) => {
+export const ListItem: React.FC<ListItemProps> = ({
+    item,
+    checkItem: checkItemProp,
+}) => {
     const state = useAppState();
-    const effects = useEffects();
-
-    const [item, setItem] = useState(itemProp);
-    useEffect(() => {
-        setItem(itemProp);
-    }, [itemProp]);
-
     const username = state.currentUser.username;
 
-    const checkItem = () => {
-        const idx = item.checkedBy!.indexOf(username);
-        if (idx > -1) {
-            item.checkedBy!.splice(idx, 1);
-            effects.api.uncheckItem(item.id!).catch(() => {
-                item.checkedBy!.push(username);
-            });
-        } else {
-            item.checkedBy!.push(username);
-            effects.api.checkItem(item.id!).catch(() => {
-                item.checkedBy!.pop();
-            });
-        }
-        setItem({ ...item });
-    };
+    const checkItem = useCallback(() => {
+        checkItemProp(item);
+    }, [checkItemProp, item]);
 
     return (
         <RNE.ListItem bottomDivider>
             <RNE.Icon
                 name={
-                    item.checkedBy && item.checkedBy.indexOf(username) > -1
+                    item.checkedBy.indexOf(username) > -1
                         ? "check-circle"
-                        : item.checkedBy?.length
+                        : item.checkedBy.length
                         ? "radio-button-checked"
                         : "radio-button-unchecked"
                 }

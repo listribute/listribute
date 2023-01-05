@@ -1,7 +1,8 @@
 import { createOvermind } from "overmind";
-import { Provider } from "overmind-react";
+import { Provider as OvermindProvider } from "overmind-react";
 import React from "react";
 import { StatusBar } from "react-native";
+import { Provider as PaperProvider } from "react-native-paper";
 import RootNavigation from "./components/RootNavigation";
 import { config } from "./overmind";
 
@@ -12,10 +13,12 @@ const App: React.FC = () => {
     );
 
     return (
-        <Provider value={overmind}>
-            <StatusBar barStyle="light-content" />
-            <RootNavigation />
-        </Provider>
+        <OvermindProvider value={overmind}>
+            <PaperProvider>
+                <StatusBar barStyle="light-content" />
+                <RootNavigation />
+            </PaperProvider>
+        </OvermindProvider>
     );
 };
 
