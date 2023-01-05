@@ -70,9 +70,9 @@ const RootNavigation: React.FC = () => {
                 <Stack.Screen
                     name="ListSettings"
                     component={ListSettings}
-                    options={({ route }) => ({
-                        title: state.listById[route.params.listId].name,
-                    })}
+                    options={{
+                        title: "List settings",
+                    }}
                 />
                 <Stack.Screen
                     name="UserSettings"
