@@ -35,6 +35,9 @@ const RootNavigation: React.FC = () => {
                         fontSize: 18,
                     },
                     headerTintColor: "white",
+                    contentStyle: {
+                        backgroundColor: "white",
+                    },
                 }}>
                 <Stack.Screen
                     name="Home"
