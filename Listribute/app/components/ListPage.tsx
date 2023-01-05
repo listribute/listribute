@@ -1,14 +1,14 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button, Input } from "@rneui/base";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
-import { RootStackParamList } from "./RootNavigation";
 import useAsyncEffect from "../hooks/useAsyncEffect";
 import { Item } from "../model/item";
 import { List } from "../model/list";
 import { useActions, useAppState, useEffects } from "../overmind";
 import { HiddenListItem, ListItem } from "./ListItem";
+import { RootStackParamList } from "./RootNavigation";
 
 type Props = NativeStackScreenProps<RootStackParamList, "List">;
 
@@ -117,7 +117,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
     }, [navigation, addItem, inputFocused]);
 
     return (
-        <View style={{ height: "100%" }}>
+        <View style={styles.container}>
             <Input
                 ref={inputRef}
                 placeholder="New item"
@@ -159,5 +159,11 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        height: "100%",
+    },
+});
 
 export default ListPage;

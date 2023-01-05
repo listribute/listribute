@@ -1,6 +1,6 @@
 import { Icon, ListItem } from "@rneui/base";
 import React from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useAppState } from "../../overmind";
 
 interface Props {
@@ -11,7 +11,7 @@ const UserList: React.FC<Props> = ({ users }) => {
     const state = useAppState();
 
     return (
-        <View style={{ height: "100%" }}>
+        <View style={styles.container}>
             {users?.map(user => (
                 <ListItem key={user} bottomDivider>
                     <Icon name="person" />
@@ -29,5 +29,11 @@ const UserList: React.FC<Props> = ({ users }) => {
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        height: "100%",
+    },
+});
 
 export default UserList;

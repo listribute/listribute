@@ -90,7 +90,6 @@ const UserSettings: React.FC<Props> = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.br} />
             {recoverUser ? (
                 <RecoverUser
                     onChange={recoveredUser => {
@@ -107,7 +106,9 @@ const UserSettings: React.FC<Props> = ({ navigation }) => {
                     />
                     <EmailInput email={email ?? ""} onChange={updateEmail} />
                     <Text
-                        style={{ color: saveStatus.success ? "green" : "red" }}>
+                        style={
+                            saveStatus.success ? styles.success : styles.failure
+                        }>
                         {saveStatus.text}
                     </Text>
                     <Button
@@ -124,9 +125,14 @@ const UserSettings: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         height: "100%",
+        paddingTop: 20,
+        padding: 5,
     },
-    br: {
-        height: 25,
+    success: {
+        color: "green",
+    },
+    failure: {
+        color: "red",
     },
 });
 
