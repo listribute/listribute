@@ -60,13 +60,6 @@ const RootNavigation: React.FC = () => {
                     name="List"
                     component={ListPage}
                     options={({ route }) => ({
-                        // Placeholder to avoid flicker
-                        headerRight: () => (
-                            <Button
-                                icon={{ name: "add", color: "white" }}
-                                type="clear"
-                            />
-                        ),
                         title:
                             route.params &&
                             state.listById[route.params.listId]?.name,
@@ -83,13 +76,6 @@ const RootNavigation: React.FC = () => {
                     name="UserSettings"
                     component={UserSettings}
                     options={{
-                        // Placeholder to avoid flicker
-                        headerRight: () => (
-                            <Button
-                                icon={{ name: "save", color: "white" }}
-                                type="clear"
-                            />
-                        ),
                         title: "User settings",
                     }}
                 />
