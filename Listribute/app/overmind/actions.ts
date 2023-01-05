@@ -3,6 +3,7 @@ import { Context } from ".";
 import { List } from "../model/list";
 import { User } from "../model/user";
 
+// Magic action that is identified by name and called by Overmind on startup
 export const onInitializeOvermind = async ({
     state,
     actions,
@@ -26,12 +27,13 @@ export const onInitializeOvermind = async ({
     state.initialized = true;
 };
 
-export const switchUser: IAction<User, void> = (
-    { state, effects }: Context,
+export const switchUser: IAction<User, Promise<void>> = async (
+    { state, actions, effects }: Context,
     user,
 ) => {
     effects.storage.setUser(user);
     state.currentUser = user;
+    await actions.refreshLists();
 };
 
 export const createList: IAction<boolean, Promise<List>> = async (
