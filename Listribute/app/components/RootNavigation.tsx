@@ -8,12 +8,14 @@ import ListPage from "./ListPage";
 import ListSettings from "./ListSettings";
 import UserSettings from "./UserSettings";
 import { useAppState } from "../overmind";
+import RecoverUser from "./UserSettings/RecoverUser";
 
 export type RootStackParamList = {
     Home: undefined;
     List: { listId: number } | undefined;
     ListSettings: { listId: number };
     UserSettings: undefined;
+    RecoverUser: undefined;
 };
 
 const RootNavigation: React.FC = () => {
@@ -77,6 +79,13 @@ const RootNavigation: React.FC = () => {
                     component={UserSettings}
                     options={{
                         title: "User settings",
+                    }}
+                />
+                <Stack.Screen
+                    name="RecoverUser"
+                    component={RecoverUser}
+                    options={{
+                        title: "Recover user",
                     }}
                 />
             </Stack.Navigator>

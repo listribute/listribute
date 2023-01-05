@@ -2,15 +2,14 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "@rneui/base";
 import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { RootStackParamList } from ".././RootNavigation";
 import { useActions, useAppState, useEffects } from "../../overmind";
+import { RootStackParamList } from "../RootNavigation";
 import EmailInput from "./EmailInput";
-import RecoverUser from "./RecoverUser";
 import UsernameInput from "./UsernameInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "UserSettings">;
 
-const UserSettings: React.FC<Props> = () => {
+const UserSettings: React.FC<Props> = ({ navigation }) => {
     const state = useAppState();
     const actions = useActions();
     const effects = useEffects();
@@ -74,47 +73,31 @@ const UserSettings: React.FC<Props> = () => {
         }
     }, [state.currentUser, username, email, actions, effects.api]);
 
-    const [recoverUser, setRecoverUser] = useState(false);
-
     return (
         <View style={styles.container}>
-            {recoverUser ? (
-                <RecoverUser
-                    onChange={recoveredUser => {
-                        actions.switchUser(recoveredUser);
-                        setRecoverUser(false);
-                    }}
-                />
-            ) : (
-                <View>
-                    <UsernameInput
-                        username={username}
-                        onChange={updateUsername}
-                        conflicting={isUsernameConflicting}
-                    />
-                    <EmailInput email={email ?? ""} onChange={updateEmail} />
-                    <Button
-                        title="Save"
-                        icon={{
-                            name: "save",
-                            color: "white",
-                        }}
-                        // type="clear"
-                        onPress={save}
-                    />
-                    <Text
-                        style={
-                            saveStatus.success ? styles.success : styles.failure
-                        }>
-                        {saveStatus.text}
-                    </Text>
-                    <Button
-                        title="Recover old user"
-                        type="clear"
-                        onPress={() => setRecoverUser(true)}
-                    />
-                </View>
-            )}
+            <UsernameInput
+                username={username}
+                onChange={updateUsername}
+                conflicting={isUsernameConflicting}
+            />
+            <EmailInput email={email ?? ""} onChange={updateEmail} />
+            <Button
+                title="Save"
+                icon={{
+                    name: "save",
+                    color: "white",
+                }}
+                // type="clear"
+                onPress={save}
+            />
+            <Text style={saveStatus.success ? styles.success : styles.failure}>
+                {saveStatus.text}
+            </Text>
+            <Button
+                title="Recover old user"
+                type="clear"
+                onPress={() => navigation.navigate("RecoverUser")}
+            />
         </View>
     );
 };
