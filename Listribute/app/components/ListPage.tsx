@@ -185,6 +185,19 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                             />
                         }>
                         <Menu.Item
+                            title="Edit settings"
+                            leadingIcon="pencil"
+                            onPress={() => {
+                                if (list?.id != null) {
+                                    navigation.navigate("ListSettings", {
+                                        listId: list.id,
+                                    });
+                                }
+                                setMenuOpen(false);
+                            }}
+                            disabled={list?.id == null}
+                        />
+                        <Menu.Item
                             title="Clear my checkmarks"
                             leadingIcon="check-circle"
                             onPress={() => {
@@ -210,6 +223,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
         menuOpen,
         clearCheckmarks,
         deleteCheckedItems,
+        list?.id,
     ]);
 
     return (
