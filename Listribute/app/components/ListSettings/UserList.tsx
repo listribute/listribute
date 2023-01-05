@@ -1,18 +1,20 @@
 import { Icon, ListItem } from "@rneui/base";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList } from "react-native";
 import { useAppState } from "../../overmind";
 
 interface Props {
-    users?: string[];
+    users: string[];
 }
 
 const UserList: React.FC<Props> = ({ users }) => {
     const state = useAppState();
 
     return (
-        <View style={styles.container}>
-            {users?.map(user => (
+        <FlatList
+            data={users}
+            keyExtractor={item => item}
+            renderItem={({ item: user }) => (
                 <ListItem key={user} bottomDivider>
                     <Icon name="person" />
                     <ListItem.Content>
@@ -23,17 +25,9 @@ const UserList: React.FC<Props> = ({ users }) => {
                         </ListItem.Title>
                     </ListItem.Content>
                 </ListItem>
-            ))}
-
-            {!users && <Text>Loading...</Text>}
-        </View>
+            )}
+        />
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        height: "100%",
-    },
-});
 
 export default UserList;
