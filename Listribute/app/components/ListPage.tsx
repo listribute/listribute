@@ -243,7 +243,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
             {items && (
                 <SwipeListView
                     data={items}
-                    keyExtractor={(_, index) => index.toString()}
+                    keyExtractor={item => item.id.toString()}
                     refreshing={isRefreshing}
                     onRefresh={refresh}
                     renderItem={({ item }) => (

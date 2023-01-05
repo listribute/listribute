@@ -44,7 +44,7 @@ const HomePage: React.FC<Props> = ({ navigation }) => {
             {state.lists.length > 0 && (
                 <SwipeListView
                     data={state.lists}
-                    keyExtractor={(_, index) => index.toString()}
+                    keyExtractor={list => list.id.toString()}
                     refreshing={isRefreshing}
                     onRefresh={refresh}
                     renderItem={({ item: list }) => (
