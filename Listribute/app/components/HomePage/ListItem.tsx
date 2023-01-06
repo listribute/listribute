@@ -6,16 +6,15 @@ import { List } from "../../model/list";
 import { useAppState } from "../../overmind";
 import { listributeRed } from "../../colors";
 
-interface ListItemProps {
+type ListItemProps = RNE.ListItemProps & {
     list: List;
-    goToList: (listId: number) => void;
-}
+};
 
-export const ListItem: React.FC<ListItemProps> = ({ list, goToList }) => {
+export const ListItem: React.FC<ListItemProps> = ({ list, ...props }) => {
     useAppState();
 
     return (
-        <RNE.ListItem onPress={() => goToList(list.id)} bottomDivider>
+        <RNE.ListItem bottomDivider {...props}>
             <RNE.Icon
                 name={
                     list.subscribers && list.subscribers.length > 1

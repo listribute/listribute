@@ -49,7 +49,10 @@ const HomePage: React.FC<Props> = ({ navigation }) => {
                     refreshing={isRefreshing}
                     onRefresh={refresh}
                     renderItem={({ item: list }) => (
-                        <ListItem list={list} goToList={goToList} />
+                        <ListItem
+                            list={list}
+                            onPress={() => goToList(list.id)}
+                        />
                     )}
                     renderHiddenItem={({ item: list }, rowMap) => (
                         <HiddenListItem

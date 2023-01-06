@@ -5,14 +5,15 @@ import { Item } from "../../model/item";
 import { useAppState, useEffects } from "../../overmind";
 import { listributeRed } from "../../colors";
 
-interface ListItemProps {
+type ListItemProps = RNE.ListItemProps & {
     item: Item;
     checkItem: (item: Item) => void;
-}
+};
 
 export const ListItem: React.FC<ListItemProps> = ({
     item,
     checkItem: checkItemProp,
+    ...props
 }) => {
     const state = useAppState();
     const username = state.currentUser.username;
@@ -22,7 +23,7 @@ export const ListItem: React.FC<ListItemProps> = ({
     }, [checkItemProp, item]);
 
     return (
-        <RNE.ListItem bottomDivider>
+        <RNE.ListItem bottomDivider {...props}>
             <RNE.Icon
                 name={
                     item.checkedBy.indexOf(username) > -1
