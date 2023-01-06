@@ -125,6 +125,10 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
         if (items) setItems([...items]);
     };
 
+    const goToItem = (item: Item) => {
+        navigation.navigate("Item", { item });
+    };
+
     const clearCheckmarks = useCallback(() => {
         items
             ?.filter(i => i.checkedBy.includes(username))
@@ -249,7 +253,11 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                     refreshing={isRefreshing}
                     onRefresh={refresh}
                     renderItem={({ item }) => (
-                        <ListItem item={item} checkItem={checkItem} />
+                        <ListItem
+                            item={item}
+                            checkItem={checkItem}
+                            onPress={() => goToItem(item)}
+                        />
                     )}
                     renderHiddenItem={({ item, index }, rowMap) => (
                         <HiddenListItem

@@ -10,11 +10,14 @@ import ListPage from "./ListPage";
 import ListSettings from "./ListSettings";
 import UserSettings from "./UserSettings";
 import RecoverUser from "./UserSettings/RecoverUser";
+import ItemPage from "./ItemPage";
+import { Item } from "../model/item";
 
 export type RootStackParamList = {
     Home: undefined;
     List: { listId: number } | undefined;
     ListSettings: { listId: number };
+    Item: { item: Item };
     UserSettings: undefined;
     RecoverUser: undefined;
 };
@@ -71,6 +74,13 @@ const RootNavigation: React.FC = () => {
                     options={{
                         title: "List settings",
                     }}
+                />
+                <Stack.Screen
+                    name="Item"
+                    component={ItemPage}
+                    options={({ route }) => ({
+                        title: route.params.item.name,
+                    })}
                 />
                 <Stack.Screen
                     name="UserSettings"

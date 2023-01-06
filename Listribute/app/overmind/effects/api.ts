@@ -144,10 +144,8 @@ export const createNewItem = (item: {
         .then(response => response.data);
 };
 
-export const updateItem = (_item: Item): Promise<void> => {
-    return Promise.reject("Not implemented");
-
-    // return $http.put(settings.baseUrl + '/item', item);
+export const updateItem = (item: Item): Promise<void> => {
+    return client.put(`${endpoints.item}/${item.id}`, item);
 };
 
 export const checkItem = (itemId: number): Promise<void> => {
