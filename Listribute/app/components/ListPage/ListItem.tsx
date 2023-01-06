@@ -8,11 +8,13 @@ import { listributeRed } from "../../colors";
 type ListItemProps = RNE.ListItemProps & {
     item: Item;
     checkItem: (item: Item) => void;
+    isOwnWishList: boolean;
 };
 
 export const ListItem: React.FC<ListItemProps> = ({
     item,
     checkItem: checkItemProp,
+    isOwnWishList,
     ...props
 }) => {
     const state = useAppState();
@@ -26,13 +28,16 @@ export const ListItem: React.FC<ListItemProps> = ({
         <RNE.ListItem bottomDivider {...props}>
             <RNE.Icon
                 name={
-                    item.checkedBy.indexOf(username) > -1
+                    isOwnWishList
+                        ? "gift-outline"
+                        : item.checkedBy.indexOf(username) > -1
                         ? "check-circle"
                         : item.checkedBy.length
                         ? "radio-button-checked"
                         : "radio-button-unchecked"
                 }
-                onPress={checkItem}
+                type={isOwnWishList ? "material-community" : undefined}
+                onPress={!isOwnWishList ? checkItem : undefined}
             />
             <RNE.ListItem.Content>
                 <RNE.ListItem.Title>{item.name}</RNE.ListItem.Title>

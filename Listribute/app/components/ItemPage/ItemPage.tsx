@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button, Input, Text } from "@rneui/base";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useAppState, useEffects } from "../../overmind";
 import { RootStackParamList } from "../RootNavigation";
@@ -9,10 +9,11 @@ import UserList from "./UserList";
 type Props = NativeStackScreenProps<RootStackParamList, "Item">;
 
 const ItemPage: React.FC<Props> = ({ route }) => {
-    useAppState();
+    const state = useAppState();
     const effects = useEffects();
 
     const item = route.params.item;
+    const list = state.listById[item.listId];
 
     const [name, setName] = useState(item.name);
     useEffect(() => setName(item.name), [item]);
@@ -67,10 +68,12 @@ const ItemPage: React.FC<Props> = ({ route }) => {
             <Text style={saveStatus.success ? styles.success : styles.failure}>
                 {saveStatus.text}
             </Text>
-            {item.checkedBy.length === 0 ? null : (
-                <Text style={styles.checkedByTitle}>Checked by:</Text>
+            {list.wishList || item.checkedBy.length === 0 ? null : (
+                <Fragment>
+                    <Text style={styles.checkedByTitle}>Checked by:</Text>
+                    <UserList users={item.checkedBy} />
+                </Fragment>
             )}
-            <UserList users={item.checkedBy} />
         </View>
     );
 };

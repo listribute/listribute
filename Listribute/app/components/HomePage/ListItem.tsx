@@ -17,10 +17,13 @@ export const ListItem: React.FC<ListItemProps> = ({ list, ...props }) => {
         <RNE.ListItem bottomDivider {...props}>
             <RNE.Icon
                 name={
-                    list.subscribers && list.subscribers.length > 1
+                    list.wishList
+                        ? "gift-outline"
+                        : list.subscribers && list.subscribers.length > 1
                         ? "person-add"
                         : "person"
                 }
+                type={list.wishList ? "material-community" : undefined}
             />
             <RNE.ListItem.Content>
                 <RNE.ListItem.Title>{list.name}</RNE.ListItem.Title>

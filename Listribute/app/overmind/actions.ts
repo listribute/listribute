@@ -1,4 +1,4 @@
-import { IAction } from "overmind";
+import { debounce, IAction, pipe } from "overmind";
 import { Context } from ".";
 import { List } from "../model/list";
 import { User } from "../model/user";
@@ -37,10 +37,13 @@ export const switchUser: IAction<User, Promise<void>> = async (
 };
 
 export const createList: IAction<boolean, Promise<List>> = async (
-    { actions, effects }: Context,
+    { state, actions, effects }: Context,
     isWishList,
 ) => {
     const newList = await effects.api.createNewList(isWishList);
+    // TODO: The initial subscribers should be populated by the API, but as
+    //       that's not the case, we need this work around here.
+    newList.subscribers.push(state.currentUser.username);
     actions.addList(newList);
     return newList;
 };
@@ -71,14 +74,17 @@ export const refreshLists: IAction<void, Promise<void>> = async ({
 export const updateListName: IAction<
     { listId: number; newName: string },
     Promise<void>
-> = async ({ state, effects }: Context, { listId, newName }) => {
-    const list = state.listById[listId];
-    const updatedList = await effects.api.updateList({
-        ...list,
-        name: newName,
-    });
-    state.listById[listId] = updatedList;
-};
+> = pipe(
+    debounce(300),
+    async ({ state, effects }: Context, { listId, newName }) => {
+        const list = state.listById[listId];
+        const updatedList = await effects.api.updateList({
+            ...list,
+            name: newName,
+        });
+        state.listById[listId] = updatedList;
+    },
+);
 
 export const setAsWishList: IAction<number, Promise<void>> = async (
     { state, effects }: Context,

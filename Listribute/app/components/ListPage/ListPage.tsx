@@ -5,7 +5,6 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Menu } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { Item } from "../../model/item";
-import { List } from "../../model/list";
 import { useActions, useAppState, useEffects } from "../../overmind";
 import { RootStackParamList } from "../RootNavigation";
 import { HiddenListItem, ListItem } from "./ListItem";
@@ -17,9 +16,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
     const actions = useActions();
     const effects = useEffects();
 
-    const [list, setList] = useState<List | null>(
-        (route.params && state.listById[route.params.listId]) ?? null,
-    );
+    const list = (route.params && state.listById[route.params.listId]) ?? null;
 
     useEffect(() => {
         if (list == null) {
@@ -27,7 +24,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
             (async () => {
                 const newList = await actions.createList(false);
                 if (mounted) {
-                    setList(newList);
+                    setItems([]);
                     navigation.setParams({ listId: newList.id });
                 }
             })();
@@ -239,19 +236,27 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
         });
     }, [navigation, inputFocused, addButton, menu]);
 
+    const isOwnWishList =
+        !!list?.wishList && list.createdBy === state.currentUser.id;
+
+    const isOthersWishList =
+        !!list?.wishList && list.createdBy !== state.currentUser.id;
+
     return (
         <View style={styles.container}>
-            <Input
-                ref={inputRef}
-                placeholder="New item"
-                leftIcon={{ name: "edit" }}
-                onFocus={() => setInputFocused(true)}
-                onBlur={() => setInputFocused(false)}
-                onSubmitEditing={() => addItem(false)}
-                blurOnSubmit={false}
-                onChangeText={setInputValue}
-                value={inputValue}
-            />
+            {!isOthersWishList && (
+                <Input
+                    ref={inputRef}
+                    placeholder="New item"
+                    leftIcon={{ name: "edit" }}
+                    onFocus={() => setInputFocused(true)}
+                    onBlur={() => setInputFocused(false)}
+                    onSubmitEditing={() => addItem(false)}
+                    blurOnSubmit={false}
+                    onChangeText={setInputValue}
+                    value={inputValue}
+                />
+            )}
 
             {items && (
                 <SwipeListView
@@ -262,6 +267,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                     renderItem={({ item }) => (
                         <ListItem
                             item={item}
+                            isOwnWishList={isOwnWishList}
                             checkItem={checkItem}
                             onPress={() => goToItem(item)}
                         />
