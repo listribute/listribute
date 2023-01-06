@@ -2,12 +2,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button } from "@rneui/base";
 import React from "react";
-import { listributeRed } from "./colors";
+import { StyleSheet } from "react-native";
+import { useAppState } from "../overmind";
+import { listributeRed } from "../colors";
 import HomePage from "./HomePage";
 import ListPage from "./ListPage";
 import ListSettings from "./ListSettings";
 import UserSettings from "./UserSettings";
-import { useAppState } from "../overmind";
 import RecoverUser from "./UserSettings/RecoverUser";
 
 export type RootStackParamList = {
@@ -28,16 +29,10 @@ const RootNavigation: React.FC = () => {
             <Stack.Navigator
                 initialRouteName="Home"
                 screenOptions={{
-                    headerStyle: {
-                        backgroundColor: listributeRed,
-                    },
-                    headerTitleStyle: {
-                        fontSize: 18,
-                    },
+                    headerStyle: styles.headerStyle,
+                    headerTitleStyle: styles.headerTitleStyle,
                     headerTintColor: "white",
-                    contentStyle: {
-                        backgroundColor: "white",
-                    },
+                    contentStyle: styles.contentStyle,
                 }}>
                 <Stack.Screen
                     name="Home"
@@ -95,5 +90,17 @@ const RootNavigation: React.FC = () => {
         </NavigationContainer>
     );
 };
+
+const styles = StyleSheet.create({
+    headerStyle: {
+        backgroundColor: listributeRed,
+    },
+    headerTitleStyle: {
+        fontSize: 18,
+    },
+    contentStyle: {
+        backgroundColor: "white",
+    },
+});
 
 export default RootNavigation;

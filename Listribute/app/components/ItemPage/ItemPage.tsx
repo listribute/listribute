@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "react-native";
-import { Item } from "../model/item";
-import { useAppState } from "../overmind";
+import { Item } from "../../model/item";
+import { useAppState } from "../../overmind";
 
 interface Props {
     item: Item;

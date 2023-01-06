@@ -4,12 +4,12 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Menu } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
-import useAsyncEffect from "../hooks/useAsyncEffect";
-import { Item } from "../model/item";
-import { List } from "../model/list";
-import { useActions, useAppState, useEffects } from "../overmind";
+import useAsyncEffect from "../../hooks/useAsyncEffect";
+import { Item } from "../../model/item";
+import { List } from "../../model/list";
+import { useActions, useAppState, useEffects } from "../../overmind";
+import { RootStackParamList } from "../RootNavigation";
 import { HiddenListItem, ListItem } from "./ListItem";
-import { RootStackParamList } from "./RootNavigation";
 
 type Props = NativeStackScreenProps<RootStackParamList, "List">;
 

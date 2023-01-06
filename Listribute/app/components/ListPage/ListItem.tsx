@@ -1,9 +1,9 @@
 import * as RNE from "@rneui/base";
 import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import { Item } from "../model/item";
-import { useAppState, useEffects } from "../overmind";
-import { listributeRed } from "./colors";
+import { Item } from "../../model/item";
+import { useAppState, useEffects } from "../../overmind";
+import { listributeRed } from "../../colors";
 
 interface ListItemProps {
     item: Item;
@@ -59,7 +59,7 @@ export const HiddenListItem: React.FC<HiddenListItemProps> = ({
     };
 
     return (
-        <View style={styles.hiddenButton}>
+        <View style={styles.hiddenDelete}>
             <RNE.Button
                 icon={{ name: "delete", color: "white" }}
                 title="Delete"
@@ -73,7 +73,7 @@ export const HiddenListItem: React.FC<HiddenListItemProps> = ({
 };
 
 const styles = StyleSheet.create({
-    hiddenButton: {
+    hiddenDelete: {
         alignItems: "flex-start",
         backgroundColor: listributeRed,
     },
