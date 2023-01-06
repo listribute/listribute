@@ -77,11 +77,12 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                 });
 
                 setItems([item, ...(items ?? [])]);
-
-                if (inputRef.current && blur) {
-                    inputRef.current.blur();
-                }
             }
+
+            if (inputRef.current && blur) {
+                inputRef.current.blur();
+            }
+
             setInputValue("");
         },
         [inputValue, list, items, effects.api],
