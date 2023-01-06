@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Menu } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
-import useAsyncEffect from "../../hooks/useAsyncEffect";
 import { Item } from "../../model/item";
 import { List } from "../../model/list";
 import { useActions, useAppState, useEffects } from "../../overmind";
@@ -41,14 +40,22 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
 
     const [items, setItems] = useState<Item[] | null>(null);
 
-    useAsyncEffect(
-        () =>
-            list != null
-                ? effects.api.getListItems(list.id)
-                : Promise.resolve(null),
-        setItems,
-        [list],
-    );
+    useEffect(() => {
+        let isMounted = true;
+
+        const unsubscribe = navigation.addListener("focus", async () => {
+            if (list?.id) {
+                const response = await effects.api.getListItems(list.id);
+
+                if (isMounted) setItems(response);
+            }
+        });
+
+        return () => {
+            unsubscribe();
+            isMounted = false;
+        };
+    }, [navigation, list?.id, effects.api]);
 
     useEffect(() => {
         if (list == null) return;
