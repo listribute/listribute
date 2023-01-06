@@ -158,73 +158,74 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
         if (items) setItems([...items]);
     }, [items, effects.api]);
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerRight: () =>
-                inputFocused ? (
+    const menu = useCallback(
+        () => (
+            <Menu
+                visible={menuOpen}
+                onDismiss={() => setMenuOpen(false)}
+                anchor={
                     <Button
                         icon={{
-                            name: "add",
+                            name: "more-vert",
                             color: "white",
                         }}
                         type="clear"
-                        onPress={() => addItem(true)}
+                        onPress={() => setMenuOpen(true)}
                     />
-                ) : (
-                    <Menu
-                        visible={menuOpen}
-                        onDismiss={() => setMenuOpen(false)}
-                        anchor={
-                            <Button
-                                icon={{
-                                    name: "more-vert",
-                                    color: "white",
-                                }}
-                                type="clear"
-                                onPress={() => setMenuOpen(true)}
-                            />
-                        }>
-                        <Menu.Item
-                            title="Edit settings"
-                            leadingIcon="pencil"
-                            onPress={() => {
-                                if (list?.id != null) {
-                                    navigation.navigate("ListSettings", {
-                                        listId: list.id,
-                                    });
-                                }
-                                setMenuOpen(false);
-                            }}
-                            disabled={list?.id == null}
-                        />
-                        <Menu.Item
-                            title="Clear my checkmarks"
-                            leadingIcon="check-circle"
-                            onPress={() => {
-                                clearCheckmarks();
-                                setMenuOpen(false);
-                            }}
-                        />
-                        <Menu.Item
-                            title="Delete checked items"
-                            leadingIcon="delete"
-                            onPress={() => {
-                                deleteCheckedItems();
-                                setMenuOpen(false);
-                            }}
-                        />
-                    </Menu>
-                ),
+                }>
+                <Menu.Item
+                    title="Edit settings"
+                    leadingIcon="pencil"
+                    onPress={() => {
+                        if (list?.id != null) {
+                            navigation.navigate("ListSettings", {
+                                listId: list.id,
+                            });
+                        }
+                        setMenuOpen(false);
+                    }}
+                    disabled={list?.id == null}
+                />
+                <Menu.Item
+                    title="Clear my checkmarks"
+                    leadingIcon="check-circle"
+                    onPress={() => {
+                        clearCheckmarks();
+                        setMenuOpen(false);
+                    }}
+                />
+                <Menu.Item
+                    title="Delete checked items"
+                    leadingIcon="delete"
+                    onPress={() => {
+                        deleteCheckedItems();
+                        setMenuOpen(false);
+                    }}
+                />
+            </Menu>
+        ),
+        [menuOpen, list?.id, navigation, clearCheckmarks, deleteCheckedItems],
+    );
+
+    const addButton = useCallback(
+        () => (
+            <Button
+                icon={{
+                    name: "add",
+                    color: "white",
+                }}
+                type="clear"
+                onPress={() => addItem(true)}
+            />
+        ),
+        [addItem],
+    );
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: inputFocused ? addButton : menu,
         });
-    }, [
-        navigation,
-        addItem,
-        inputFocused,
-        menuOpen,
-        clearCheckmarks,
-        deleteCheckedItems,
-        list?.id,
-    ]);
+    }, [navigation, inputFocused, addButton, menu]);
 
     return (
         <View style={styles.container}>
