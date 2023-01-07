@@ -3,10 +3,7 @@ import { Observable } from "rxjs";
 import { Item } from "../../model/item";
 import { List } from "../../model/list";
 import { User } from "../../model/user";
-
-// Credentials set by initialize to be able to re-authenticate
-// when session cookie expires and we receive a 401
-let credentials: Credentials;
+import { getUser } from "./storage";
 
 const client = axios.create({
     // TODO: Extract baseURL to a config file
@@ -22,6 +19,12 @@ client.interceptors.response.use(
             error?.config?.url?.indexOf("auth") === -1
         ) {
             console.log("Session cookie expired, re-authenticating...");
+            const credentials = await getUser();
+            if (credentials == null) {
+                // This should be an impossible scenario
+                console.error("No credentials in store");
+                throw new Error("Missing credentials"); // TODO: Make sure this kills the app
+            }
             try {
                 await login(credentials);
             } catch (err) {
@@ -53,13 +56,10 @@ export type Credentials = {
 };
 
 // START /auth
-export const login = async (cred: Credentials): Promise<User> => {
-    const response = await client.post<User>(
-        endpoints.auth,
-        cred ?? credentials,
-    );
-    credentials = cred;
-    return response.data;
+export const login = async (credentials: Credentials): Promise<User> => {
+    return client
+        .post<User>(endpoints.auth, credentials)
+        .then(response => response.data);
 };
 
 export const logout = (): Promise<void> => {
