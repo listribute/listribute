@@ -115,7 +115,7 @@ const RecoverUser: React.FC<Props> = ({ navigation }) => {
             ) : step === 3 ? (
                 <Fragment>
                     <Text style={styles.text}>
-                        You have successfully recovered your user.
+                        You have successfully recovered your user!
                     </Text>
                     <Button
                         type="clear"

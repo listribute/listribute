@@ -3,6 +3,7 @@ import { Button } from "@rneui/base";
 import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useActions, useAppState, useEffects } from "../../overmind";
+import { confirmFactoryReset } from "../../alerts";
 import { RootStackParamList } from "../RootNavigation";
 import EmailInput from "./EmailInput";
 import UsernameInput from "./UsernameInput";
@@ -98,6 +99,15 @@ const UserSettings: React.FC<Props> = ({ navigation }) => {
                 type="clear"
                 onPress={() => navigation.navigate("RecoverUser")}
             />
+            <Button
+                title="Factory reset"
+                type="clear"
+                titleStyle={styles.factoryReset}
+                onPress={async () => {
+                    const confirmed = await confirmFactoryReset();
+                    if (confirmed) actions.factoryReset();
+                }}
+            />
         </View>
     );
 };
@@ -107,12 +117,17 @@ const styles = StyleSheet.create({
         height: "100%",
         paddingTop: 20,
         padding: 5,
+        display: "flex",
     },
     success: {
         color: "green",
     },
     failure: {
         color: "red",
+    },
+    factoryReset: {
+        color: "red",
+        marginTop: 20,
     },
 });
 

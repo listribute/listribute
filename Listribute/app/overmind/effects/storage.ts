@@ -15,3 +15,7 @@ export const setUser = async (user: User): Promise<void> => {
     const userJson = JSON.stringify(user);
     return AsyncStorage.setItem(USER_KEY, userJson);
 };
+
+export const clearUser = async (): Promise<void> => {
+    return AsyncStorage.removeItem(USER_KEY);
+};

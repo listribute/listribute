@@ -1,54 +1,8 @@
-import axios from "axios";
 import { Observable } from "rxjs";
+import { client, endpoints } from "../../components/AxiosSetup";
 import { Item } from "../../model/item";
 import { List } from "../../model/list";
 import { User } from "../../model/user";
-import { getUser } from "./storage";
-
-const client = axios.create({
-    // TODO: Extract baseURL to a config file
-    baseURL: "https://vtek.no/listribute/api/",
-    withCredentials: true, // for session cookie
-});
-
-client.interceptors.response.use(
-    response => response,
-    async error => {
-        if (
-            error?.response?.status === 401 &&
-            error?.config?.url?.indexOf("auth") === -1
-        ) {
-            console.log("Session cookie expired, re-authenticating...");
-            const credentials = await getUser();
-            if (credentials == null) {
-                // This should be an impossible scenario
-                console.error("No credentials in store");
-                throw new Error("Missing credentials"); // TODO: Make sure this kills the app
-            }
-            try {
-                await login(credentials);
-            } catch (err) {
-                // TODO: This is bad.
-                // Ask user if we should reset storage and basically do a factory reset?
-                console.error("Tried to re-authenticate, but failed.", err);
-                return Promise.reject(error);
-            }
-            console.log("Successfully re-authenticated, repeating request.");
-            return client.request(error.config);
-        }
-        // TODO: Implement some global generic error handler
-        // to present some information to the user
-        return Promise.reject(error);
-    },
-);
-
-const endpoints = {
-    auth: "auth",
-    user: "user",
-    list: "list",
-    item: "item",
-    subscription: "subscription",
-};
 
 export type Credentials = {
     username: string;

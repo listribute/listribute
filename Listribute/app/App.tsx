@@ -3,6 +3,7 @@ import { Provider as OvermindProvider } from "overmind-react";
 import React from "react";
 import { StatusBar } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
+import AxiosSetup from "./components/AxiosSetup";
 import RootNavigation from "./components/RootNavigation";
 import { config } from "./overmind";
 
@@ -15,8 +16,10 @@ const App: React.FC = () => {
     return (
         <OvermindProvider value={overmind}>
             <PaperProvider>
-                <StatusBar barStyle="light-content" />
-                <RootNavigation />
+                <AxiosSetup>
+                    <StatusBar barStyle="light-content" />
+                    <RootNavigation />
+                </AxiosSetup>
             </PaperProvider>
         </OvermindProvider>
     );

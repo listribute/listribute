@@ -1,7 +1,9 @@
 import { debounce, IAction, pipe } from "overmind";
+import { Alert } from "react-native";
 import { Context } from ".";
 import { List } from "../model/list";
 import { User } from "../model/user";
+import { confirmFactoryReset } from "../alerts";
 
 // Magic action that is identified by name and called by Overmind on startup
 export const onInitializeOvermind = async ({
@@ -19,12 +21,51 @@ export const onInitializeOvermind = async ({
         effects.storage.setUser(credentials);
     }
 
-    const user = await effects.api.login(credentials);
-    state.currentUser = user;
+    try {
+        const user = await effects.api.login(credentials);
+        state.currentUser = user;
 
-    await actions.refreshLists();
+        await actions.refreshLists();
 
-    state.initialized = true;
+        state.initialized = true;
+    } catch (error) {
+        // The credentials may somehow be corrupt, perhaps something happened
+        // server side.
+        // Let the user choose to do a "factory reset"
+        Alert.alert(
+            "Sorry 😢",
+            "Something went wrong when trying to talk with the server.\n\n" +
+                "Please close the app and try again later or do a factory reset to start over.",
+            [
+                {
+                    text: "Close",
+                    onPress: () => {
+                        throw new Error("Close");
+                    },
+                },
+                {
+                    text: "Factory reset",
+                    onPress: async () => {
+                        const confirmed = await confirmFactoryReset();
+                        if (confirmed) {
+                            await actions.factoryReset();
+                            // Call itself to start over with a new user
+                            actions.onInitializeOvermind();
+                        }
+                    },
+                    style: "destructive",
+                },
+            ],
+        );
+    }
+};
+
+export const factoryReset: IAction<void, Promise<void>> = async ({
+    state,
+    effects,
+}: Context) => {
+    await effects.storage.clearUser();
+    state.initialized = false;
 };
 
 export const switchUser: IAction<User, Promise<void>> = async (
