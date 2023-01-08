@@ -24,6 +24,16 @@ const HomePage: React.FC<Props> = ({ navigation }) => {
         };
     }, [actions.addList, effects.api.listsObservable]);
 
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("focus", async () => {
+            actions.refreshLists();
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [navigation, actions]);
+
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const refresh = async () => {
