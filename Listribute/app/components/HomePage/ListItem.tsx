@@ -49,7 +49,7 @@ export const HiddenListItem: React.FC<HiddenListItemProps> = ({
             <View style={styles.hiddenDelete}>
                 <Button
                     icon={{ name: "delete", color: "white" }}
-                    title="Delete"
+                    title="Remove"
                     type="clear"
                     buttonStyle={{ height: "100%" }}
                     titleStyle={{ color: "white" }}
