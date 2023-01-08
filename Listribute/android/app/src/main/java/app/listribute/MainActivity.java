@@ -1,4 +1,4 @@
-package com.listribute;
+package app.listribute;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -1,4 +1,4 @@
-package com.listribute;
+package app.listribute;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

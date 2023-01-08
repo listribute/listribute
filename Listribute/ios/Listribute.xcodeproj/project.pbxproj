@@ -449,7 +449,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = no.vtek.listribute;
+				PRODUCT_BUNDLE_IDENTIFIER = app.listribute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Listribute.app/Listribute";
 			};
@@ -473,7 +473,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = no.vtek.listribute;
+				PRODUCT_BUNDLE_IDENTIFIER = app.listribute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Listribute.app/Listribute";
 			};
@@ -498,7 +498,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = no.vtek.listribute;
+				PRODUCT_BUNDLE_IDENTIFIER = app.listribute;
 				PRODUCT_NAME = Listribute;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -524,7 +524,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = no.vtek.listribute;
+				PRODUCT_BUNDLE_IDENTIFIER = app.listribute;
 				PRODUCT_NAME = Listribute;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
