@@ -29,13 +29,10 @@ const ItemPage: React.FC<Props> = ({ route }) => {
             );
             setSaveStatus({ success: true, text: "Item saved" });
         } catch (error: any) {
-            switch (error?.response?.status) {
-                default:
-                    setSaveStatus({
-                        success: false,
-                        text: `Server error(${error?.response?.status}). Try again later.`,
-                    });
-            }
+            setSaveStatus({
+                success: false,
+                text: `Server error(${error?.response?.status}). Try again later.`,
+            });
         }
     };
 
@@ -59,6 +56,7 @@ const ItemPage: React.FC<Props> = ({ route }) => {
                 label="Description"
                 onChangeText={setDescription}
                 value={description ?? ""}
+                disabled={list.isOthersWishList(state.currentUser.id)}
             />
             <Button
                 title="Save"
