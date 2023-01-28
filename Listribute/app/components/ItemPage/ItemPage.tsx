@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button, Input, Text } from "@rneui/base";
 import React, { Fragment, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { Item } from "../../model/item";
 import { useAppState, useEffects } from "../../overmind";
 import { RootStackParamList } from "../RootNavigation";
 import UserList from "./UserList";
@@ -23,7 +24,9 @@ const ItemPage: React.FC<Props> = ({ route }) => {
 
     const save = async () => {
         try {
-            await effects.api.updateItem({ ...item, name, description });
+            await effects.api.updateItem(
+                new Item({ ...item, name, description }),
+            );
             setSaveStatus({ success: true, text: "Item saved" });
         } catch (error: any) {
             switch (error?.response?.status) {

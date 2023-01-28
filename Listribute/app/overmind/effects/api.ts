@@ -4,6 +4,29 @@ import { Item } from "../../model/item";
 import { List } from "../../model/list";
 import { User } from "../../model/user";
 
+// Helper functions to map API response to object of given type
+async function request<T>(
+    type: { new (...args: any[]): T },
+    data: Promise<any>,
+): Promise<T> {
+    switch (type) {
+        case Item:
+            return new Item(await data) as T;
+        case List:
+            return new List(await data) as T;
+        case User:
+            return new User(await data) as T;
+        default:
+            throw new Error("Unknown type");
+    }
+}
+async function requestMany<T>(
+    type: { new (...args: any[]): T },
+    data: Promise<any[]>,
+): Promise<T[]> {
+    return Promise.all((await data).map(d => request(type, d)));
+}
+
 export type Credentials = {
     username: string;
     password: string;
@@ -11,9 +34,12 @@ export type Credentials = {
 
 // START /auth
 export const login = async (credentials: Credentials): Promise<User> => {
-    return client
-        .post<User>(endpoints.auth, credentials)
-        .then(response => response.data);
+    return request(
+        User,
+        client
+            .post(endpoints.auth, credentials)
+            .then(response => response.data),
+    );
 };
 
 export const logout = (): Promise<void> => {
@@ -23,17 +49,24 @@ export const logout = (): Promise<void> => {
 
 // START /user
 export const createNewUser = (): Promise<User> => {
-    return client.post<User>(endpoints.user).then(response => response.data);
+    return request(
+        User,
+        client.post(endpoints.user).then(response => response.data),
+    );
 };
 
 export const updateUser = (user: User): Promise<User> => {
-    return client
-        .put<User>(endpoints.user, user)
-        .then(response => response.data);
+    return request(
+        User,
+        client.put(endpoints.user, user).then(response => response.data),
+    );
 };
 
 export const getUserInfo = (): Promise<User> => {
-    return client.get<User>(endpoints.user).then(response => response.data);
+    return request(
+        User,
+        client.get(endpoints.user).then(response => response.data),
+    );
 };
 
 export const testUsername = (username: string): Promise<void> => {
@@ -59,31 +92,44 @@ export const sendPassword = (username: string): Promise<void> => {
 
 // START /list
 export const createNewList = (wishList: boolean): Promise<List> => {
-    return client
-        .post<List>(endpoints.list, { wishList })
-        .then(response => response.data);
+    return request(
+        List,
+        client
+            .post(endpoints.list, { wishList })
+            .then(response => response.data),
+    );
 };
 
 export const updateList = (list: List): Promise<List> => {
-    return client
-        .put<List>(endpoints.list, list)
-        .then(response => response.data);
+    return request(
+        List,
+        client.put(endpoints.list, list).then(response => response.data),
+    );
 };
 
 export const getList = (listId: number): Promise<List> => {
-    return client
-        .get<List>(`${endpoints.list}/${listId}`)
-        .then(response => response.data);
+    return request(
+        List,
+        client
+            .get(`${endpoints.list}/${listId}`)
+            .then(response => response.data),
+    );
 };
 
 export const getAllLists = (): Promise<List[]> => {
-    return client.get<List[]>(endpoints.list).then(response => response.data);
+    return requestMany(
+        List,
+        client.get(endpoints.list).then(response => response.data),
+    );
 };
 
 export const getListItems = (listId: number): Promise<Item[]> => {
-    return client
-        .get<Item[]>(`${endpoints.list}/${listId}/items`)
-        .then(response => response.data);
+    return requestMany(
+        Item,
+        client
+            .get(`${endpoints.list}/${listId}/items`)
+            .then(response => response.data),
+    );
 };
 // END /list
 
@@ -93,9 +139,10 @@ export const createNewItem = (item: {
     name: string;
     order: number;
 }): Promise<Item> => {
-    return client
-        .post<Item>(endpoints.item, item)
-        .then(response => response.data);
+    return request(
+        Item,
+        client.post(endpoints.item, item).then(response => response.data),
+    );
 };
 
 export const updateItem = (item: Item): Promise<void> => {

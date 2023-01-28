@@ -90,7 +90,7 @@ export const createList: IAction<boolean, Promise<List>> = async (
 };
 
 export const addList: IAction<List, void> = ({ state }: Context, list) => {
-    state.listById[list.id] = { ...list };
+    state.listById[list.id] = list;
 };
 
 export const removeList: IAction<number, Promise<void>> = async (
@@ -119,10 +119,12 @@ export const updateListName: IAction<
     debounce(300),
     async ({ state, effects }: Context, { listId, newName }) => {
         const list = state.listById[listId];
-        const updatedList = await effects.api.updateList({
-            ...list,
-            name: newName,
-        });
+        const updatedList = await effects.api.updateList(
+            new List({
+                ...list,
+                name: newName,
+            }),
+        );
         state.listById[listId] = updatedList;
     },
 );
@@ -132,10 +134,12 @@ export const setAsWishList: IAction<number, Promise<void>> = async (
     listId,
 ) => {
     const list = state.listById[listId];
-    const updatedList = await effects.api.updateList({
-        ...list,
-        wishList: true,
-    });
+    const updatedList = await effects.api.updateList(
+        new List({
+            ...list,
+            wishList: true,
+        }),
+    );
     state.listById[listId] = updatedList;
 };
 
@@ -145,5 +149,5 @@ export const addUserToList: IAction<
 > = async ({ state, effects }: Context, { listId, username }) => {
     await effects.api.addUserToList(listId, username);
     const list = state.listById[listId];
-    list.subscribers = [...list.subscribers, username];
+    list.addSubscriber(username);
 };
