@@ -20,4 +20,12 @@ export class List {
     addSubscriber(username: string) {
         this._subscribers = [...this.subscribers, username];
     }
+
+    isOwnWishList(userId: number) {
+        return !!this?.wishList && this.createdBy === userId;
+    }
+
+    isOthersWishList(userId: number) {
+        return !!this?.wishList && this.createdBy !== userId;
+    }
 }

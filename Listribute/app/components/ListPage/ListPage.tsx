@@ -236,15 +236,9 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
         });
     }, [navigation, inputFocused, addButton, menu]);
 
-    const isOwnWishList =
-        !!list?.wishList && list.createdBy === state.currentUser.id;
-
-    const isOthersWishList =
-        !!list?.wishList && list.createdBy !== state.currentUser.id;
-
     return (
         <View style={styles.container}>
-            {!isOthersWishList && (
+            {!list?.isOthersWishList && (
                 <Input
                     ref={inputRef}
                     placeholder="New item"
@@ -267,7 +261,9 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                     renderItem={({ item }) => (
                         <ListItem
                             item={item}
-                            isOwnWishList={isOwnWishList}
+                            isOwnWishList={
+                                !!list?.isOwnWishList(state.currentUser.id)
+                            }
                             checkItem={checkItem}
                             onPress={() => goToItem(item)}
                         />
