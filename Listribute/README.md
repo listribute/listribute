@@ -16,9 +16,11 @@ and host platform. Follow instructions on: https://reactnative.dev/docs/environm
 ### iOS
 
 - Install XCode (and CLI tools)
-- Install Ruby (version in .ruby-version)
+- Install Ruby
 - Run `bundle install`
-- Run `bundle exec pod install` inside ios folder
+- Go inside ios folder
+- Run `pod install --repo-update`
+- Run `bundle exec pod install`
 
 ## Run
 
