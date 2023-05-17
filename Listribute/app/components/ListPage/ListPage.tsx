@@ -238,7 +238,7 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            {!list?.isOthersWishList && (
+            {!list?.isOthersWishList(state.currentUser.id) && (
                 <Input
                     ref={inputRef}
                     placeholder="New item"
