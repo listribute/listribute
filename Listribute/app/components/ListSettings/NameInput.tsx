@@ -12,7 +12,8 @@ const NameInput: React.FC<Props> = ({ name, onChange }) => {
 
     return (
         <Input
-            placeholder="List name"
+            label="List name"
+            placeholder="Some list"
             leftIcon={{ name: "edit" }}
             onChangeText={newName => newName && onChange(newName)}
             defaultValue={name}

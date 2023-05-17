@@ -1,14 +1,14 @@
-import { CheckBox } from "@rneui/base";
+import { Button } from "@rneui/base";
 import React from "react";
 import { Alert } from "react-native";
-import { useAppState } from "../../overmind";
+import { useAppState } from "../../overmind/index";
 
 interface Props {
     isWishList: boolean;
     onSetWishList: () => void;
 }
 
-const WishListCheckBox: React.FC<Props> = ({ isWishList, onSetWishList }) => {
+const WishListButton: React.FC<Props> = ({ isWishList, onSetWishList }) => {
     useAppState();
 
     const setWishList = () => {
@@ -31,14 +31,13 @@ const WishListCheckBox: React.FC<Props> = ({ isWishList, onSetWishList }) => {
     };
 
     return (
-        <CheckBox
-            checked={isWishList}
-            title={"Wish list"}
-            iconRight
-            right
+        <Button
+            title={isWishList ? "This is a wish list" : "Convert to wish list"}
+            disabled={isWishList}
             onPress={setWishList}
+            type="clear"
         />
     );
 };
 
-export default WishListCheckBox;
+export default WishListButton;
