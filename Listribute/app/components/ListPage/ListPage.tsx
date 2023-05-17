@@ -107,48 +107,48 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
 
     const username = state.currentUser.username;
 
-    const checkItem = (item: Item) => {
-        const idx = item.checkedBy.indexOf(username);
-        if (idx > -1) {
-            item.checkedBy.splice(idx, 1);
+    const checkItem = useCallback(
+        (item: Item) => {
+            const idx = item.checkedBy.indexOf(username);
+            if (idx > -1) {
+                item.checkedBy = [
+                    ...item.checkedBy.slice(0, idx),
+                    ...item.checkedBy.slice(idx + 1),
+                ];
 
-            effects.api.uncheckItem(item.id).catch(() => {
-                item.checkedBy.push(username);
-                if (items) setItems([...items]);
-            });
-        } else {
-            item.checkedBy.push(username);
+                effects.api.uncheckItem(item.id).catch(() => {
+                    item.checkedBy = [
+                        ...item.checkedBy.slice(0, idx),
+                        username,
+                        ...item.checkedBy.slice(idx),
+                    ];
+                    if (items) setItems([...items]);
+                });
+            } else {
+                item.checkedBy = [...item.checkedBy, username];
 
-            effects.api.checkItem(item.id).catch(() => {
-                item.checkedBy.pop();
-                if (items) setItems([...items]);
-            });
-        }
+                effects.api.checkItem(item.id).catch(() => {
+                    item.checkedBy = item.checkedBy.slice(0, -1);
+                    if (items) setItems([...items]);
+                });
+            }
 
-        // Trigger a rerender with a changed items list
-        if (items) setItems([...items]);
-    };
+            // Trigger a rerender with a changed items list
+            if (items) setItems([...items]);
+        },
+        [username, items, effects.api],
+    );
 
     const goToItem = (item: Item) => {
         navigation.navigate("Item", { item });
     };
 
     const clearCheckmarks = useCallback(() => {
-        items
-            ?.filter(i => i.checkedBy.includes(username))
-            .forEach(i => {
-                const backup = i.checkedBy;
-                i.checkedBy = [];
-                // TODO: Await this call and handle potential failure
-                effects.api.uncheckItem(i.id).catch(() => {
-                    i.checkedBy = backup;
-                    setItems([...items]);
-                });
-            });
+        items?.filter(i => i.checkedBy.includes(username)).forEach(checkItem);
 
         // Trigger a rerender with a changed items list
         if (items) setItems([...items]);
-    }, [items, username, effects.api]);
+    }, [items, username, checkItem]);
 
     const deleteCheckedItems = useCallback(() => {
         items
