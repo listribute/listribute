@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
         marginTop: 30,
         fontSize: 18,
         textAlign: "center",
-        textDecorationLine: "underline",
     },
 });
 
