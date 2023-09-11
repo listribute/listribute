@@ -203,17 +203,26 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                         setMenuOpen(false);
                     }}
                 />
-                <Menu.Item
-                    title="Delete checked items"
-                    leadingIcon="delete"
-                    onPress={() => {
-                        deleteCheckedItems();
-                        setMenuOpen(false);
-                    }}
-                />
+                {!list?.isOthersWishList(state.currentUser.id) && (
+                    <Menu.Item
+                        title="Delete checked items"
+                        leadingIcon="delete"
+                        onPress={() => {
+                            deleteCheckedItems();
+                            setMenuOpen(false);
+                        }}
+                    />
+                )}
             </Menu>
         ),
-        [menuOpen, list?.id, navigation, clearCheckmarks, deleteCheckedItems],
+        [
+            menuOpen,
+            list,
+            state.currentUser.id,
+            navigation,
+            clearCheckmarks,
+            deleteCheckedItems,
+        ],
     );
 
     const addButton = useCallback(
@@ -268,16 +277,20 @@ const ListPage: React.FC<Props> = ({ navigation, route }) => {
                             onPress={() => goToItem(item)}
                         />
                     )}
-                    renderHiddenItem={({ item, index }, rowMap) => (
-                        <HiddenListItem
-                            item={item}
-                            onDeleteItem={() => {
-                                rowMap[item.id.toString()].closeRow();
-                                items.splice(index, 1);
-                                setItems(items.slice(0));
-                            }}
-                        />
-                    )}
+                    renderHiddenItem={
+                        list?.isOthersWishList(state.currentUser.id)
+                            ? undefined
+                            : ({ item, index }, rowMap) => (
+                                  <HiddenListItem
+                                      item={item}
+                                      onDeleteItem={() => {
+                                          rowMap[item.id.toString()].closeRow();
+                                          items.splice(index, 1);
+                                          setItems(items.slice(0));
+                                      }}
+                                  />
+                              )
+                    }
                     friction={100}
                     tension={150}
                     leftOpenValue={150}
